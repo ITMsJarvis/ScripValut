@@ -8,7 +8,9 @@ import {
 } from "../controllers/UserAuth.js";
 import {
   UserLoginValidator,
+  UserPasswordValidator,
   UserRegisterValidator,
+  UserResetEmailValidator,
 } from "../util/validation.js";
 import { verifyTokenandUser } from "../util/verifyToken.js";
 
@@ -28,10 +30,10 @@ router.post("/refreshToken", verifyTokenandUser, RefreshToken);
 
 //Forgotpassword
 
-router.post("/forgotpassword", ForgotPassword);
+router.post("/forgotpassword", UserResetEmailValidator, ForgotPassword);
 
 //Reser Password
 
-router.post("/resetPassword", ResetPassword);
+router.post("/resetPassword", UserPasswordValidator, ResetPassword);
 
 export default router;

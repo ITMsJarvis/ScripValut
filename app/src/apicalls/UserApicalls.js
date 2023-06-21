@@ -116,11 +116,8 @@ export const PasswordReset = async (dispatch, email) => {
         PassowordResetEmailFailed([{ path: "email", msg: e.response.data }])
       );
     } else {
-      dispatch(
-        PassowordResetEmailFailed([
-          { path: "serverError", msg: "Something went wrong" },
-        ])
-      );
+      console.log(e.response.data.error);
+      dispatch(PassowordResetEmailFailed(e.response.data.error));
     }
   }
 };
@@ -145,11 +142,7 @@ export const ResetPassword = async (dispatch, newPassword, token) => {
         ResetPasswordFailed([{ path: "password", msg: e.response.data }])
       );
     } else {
-      dispatch(
-        ResetPasswordFailed([
-          { path: "serverError", msg: "Something went wrong" },
-        ])
-      );
+      dispatch(ResetPasswordFailed(e.response.data.error));
     }
   }
 };

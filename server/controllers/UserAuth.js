@@ -197,13 +197,13 @@ export const ForgotPassword = async (req, res) => {
       }
 
       return res.status(201).json({
-        msg: "Passowrd reset email sent on registered mail id, Please check",
+        msg: "Password reset email has been sent to the registered email address.",
       });
     });
   } catch (error) {
     res
       .status(500)
-      .json({ error: [{ path: "serverError", msg: "Something went wrong" }] });
+      .json({ error: [{ path: "email", msg: "Something went wrong" }] });
   }
 };
 
