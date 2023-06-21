@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
 import User from "../models/UserModel.js";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
+import Mailgen from "mailgen";
 
 const generateAccesToken = (user) => {
   return jwt.sign(
@@ -121,6 +123,82 @@ export const LoginUser = async (req, res) => {
 
     res.status(200).json({ ...others, accessToken, refreshToken });
   } catch (e) {
+    res
+      .status(500)
+      .json({ error: [{ path: "serverError", msg: "Something went wrong" }] });
+  }
+};
+
+export const ForgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json("User not found");
+    }
+
+    const refreshToken = generateRefreshToken(user);
+
+    user.refreshToken = refreshToken;
+
+    await user.save();
+
+    const config = {
+      service: "gmail",
+      auth: {
+        user: process.env.GMAIL_ID,
+        pass: process.env.GMAIL_PASSWORD,
+      },
+    };
+
+    let transporter = nodemailer.createTransport(config);
+
+    let MailGenerator = new Mailgen({
+      theme: "default",
+      product: {
+        name: "Mailgen",
+        link: "https://mailgen.js/",
+      },
+    });
+
+    let response = {
+      body: {
+        name: "ScripValut",
+        intro:
+          "You have received this email because a password reset request for your account was received",
+        action: {
+          instructions: "Click the button below to reset your password:",
+          button: {
+            color: "#DC4D2F",
+            text: "Reset your password",
+            link: "https://mailgen.js/reset?s=b350163a1a010d9729feb74992c1a010",
+          },
+        },
+        outro:
+          "If you did not request a password reset, no further action is required on your part.",
+      },
+    };
+
+    let mail = MailGenerator.generate(response);
+
+    let message = {
+      from: process.env.GMAIL_ID,
+      to: email,
+      subject: "ScripValut Account:Password recovery",
+      html: mail,
+    };
+
+    transporter.sendMail(message, (err, info) => {
+      if (err) {
+        return res.status(500).json({ err });
+      }
+
+      return res.status(201).json({
+        msg: "Rest email sent on register mail id",
+      });
+    });
+  } catch (error) {
     res
       .status(500)
       .json({ error: [{ path: "serverError", msg: "Something went wrong" }] });

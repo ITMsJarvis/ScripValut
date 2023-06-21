@@ -47,7 +47,7 @@ const Top = styled.div`
 
 const Center = styled.div`
   flex: 5;
-  min-width: 80%;
+  max-width: 500px;
   height: 100%;
   display: flex;
   align-items: center;

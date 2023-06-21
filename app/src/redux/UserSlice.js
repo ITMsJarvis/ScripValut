@@ -29,6 +29,7 @@ const UserSlice = createSlice({
     RegisterUserFailed: (state, action) => {
       state.error = true;
       state.errorList = action.payload;
+      state.isLoading = false;
     },
 
     LoginUserStart: (state, action) => {
@@ -49,6 +50,11 @@ const UserSlice = createSlice({
     LoginUserFailed: (state, action) => {
       state.error = true;
       state.errorList = action.payload;
+      state.isLoading = false;
+    },
+
+    ClearErrorList: (state, action) => {
+      state.errorList = [];
     },
   },
 });
@@ -60,6 +66,7 @@ export const {
   LoginUserStart,
   LoginUserSuccess,
   LoginUserFailed,
+  ClearErrorList,
 } = UserSlice.actions;
 
 export default UserSlice.reducer;

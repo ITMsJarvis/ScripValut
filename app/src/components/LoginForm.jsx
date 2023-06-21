@@ -7,6 +7,7 @@ import { usepasswordview } from "../customhooks/Usepasswordview";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { LoginUser } from "../apicalls/UserApicalls";
+import { ClearErrorList } from "../redux/UserSlice";
 
 const SlideIn = keyframes`
 
@@ -17,6 +18,19 @@ const SlideIn = keyframes`
     to{
 
       transform:translateX(0%)
+    }
+
+`;
+
+const Rotate = keyframes`
+  
+    from{
+
+      transform:rotate(0)
+    }
+    to{
+
+      transform:rotate(360deg)
     }
 
 `;
@@ -149,8 +163,17 @@ const ErrorMessage = styled.small`
   font-weight: 600;
 `;
 
+const Loader = styled.div`
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  border-bottom-color: transparent;
+  animation: ${Rotate} 2s infinite linear;
+`;
+
 const LoginForm = () => {
-  const { errorList } = useSelector((state) => state.users);
+  const { isLoading, errorList } = useSelector((state) => state.users);
 
   const [showPassword, ViewPassword] = usepasswordview();
 
@@ -172,8 +195,8 @@ const LoginForm = () => {
       <Top>
         <Heading>Login into your ScripVault account</Heading>
         <div>
-          <Subtitle>Not a member of ScripVault</Subtitle>
-          <Links onClick={() => (window.location.href = "/register")}>
+          <Subtitle>Not a member of ScripVault?</Subtitle>
+          <Links to="/register" onClick={() => dispatch(ClearErrorList())}>
             Register here
           </Links>
         </div>
@@ -223,7 +246,7 @@ const LoginForm = () => {
                 <ErrorMessage key={id}>{e.msg}</ErrorMessage>
               )
           )}
-          <Button type="submit">Login</Button>
+          <Button type="submit">{isLoading ? <Loader /> : "Login"}</Button>
         </Form>
       </Center>
     </Container>

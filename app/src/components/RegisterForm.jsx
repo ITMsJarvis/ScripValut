@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RegisterUser } from "../apicalls/UserApicalls";
+import { ClearErrorList } from "../redux/UserSlice";
 
 const SlideIn = keyframes`
 
@@ -17,6 +18,19 @@ const SlideIn = keyframes`
     to{
 
       transform:translateX(0)
+    }
+
+`;
+
+const Rotate = keyframes`
+  
+    from{
+
+      transform:rotate(0)
+    }
+    to{
+
+      transform:rotate(360deg)
     }
 
 `;
@@ -151,8 +165,17 @@ const ErrorMessage = styled.small`
   font-weight: 600;
 `;
 
+const Loader = styled.div`
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  border-bottom-color: transparent;
+  animation: ${Rotate} 2s infinite linear;
+`;
+
 const RegisterForm = () => {
-  const { errorList, serverMessage } = useSelector((state) => state.users);
+  const { isLoading, errorList } = useSelector((state) => state.users);
 
   const [showPassword, ViewPassword] = usepasswordview();
   const [name, setName] = useState("");
@@ -178,7 +201,7 @@ const RegisterForm = () => {
         <Heading>Welcome back</Heading>
         <div>
           <Subtitle>Already a member of ScripVault?</Subtitle>
-          <Links onClick={() => (window.location.href = "/login")}>
+          <Links to="/login" onClick={() => dispatch(ClearErrorList())}>
             Login here
           </Links>
         </div>
@@ -254,7 +277,7 @@ const RegisterForm = () => {
                 <ErrorMessage key={id}>{e.msg}</ErrorMessage>
               )
           )}
-          <Button type="submit">Register</Button>
+          <Button type="submit">{isLoading ? <Loader /> : "Register"}</Button>
         </Form>
       </Center>
     </Container>
