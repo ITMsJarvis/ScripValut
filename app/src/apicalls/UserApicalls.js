@@ -1,15 +1,23 @@
 import { useNavigate } from "react-router-dom";
 import { publicRequest } from "../apiRequest";
 import {
+  ClearErrorList,
   LoginUserFailed,
   LoginUserStart,
   LoginUserSuccess,
+  PassowordResetEmailFailed,
+  PassowordResetEmailStart,
+  PassowordResetEmailSuccess,
   RegisterUserFailed,
   RegisterUserStart,
   RegisterUserSuccess,
+  ResetPasswordFailed,
+  ResetPasswordStarted,
+  ResetPasswordSuccess,
 } from "../redux/UserSlice";
 
 export const RegisterUser = async (dispatch, user) => {
+  dispatch(ClearErrorList());
   dispatch(RegisterUserStart());
 
   try {
@@ -44,6 +52,7 @@ export const RegisterUser = async (dispatch, user) => {
 };
 
 export const LoginUser = async (dispatch, user) => {
+  dispatch(ClearErrorList());
   dispatch(LoginUserStart());
 
   try {
@@ -81,7 +90,63 @@ export const LoginUser = async (dispatch, user) => {
     } else {
       console.log(e);
       dispatch(
-        RegisterUserFailed([
+        LoginUserFailed([{ path: "serverError", msg: "Something went wrong" }])
+      );
+    }
+  }
+};
+
+export const PasswordReset = async (dispatch, email) => {
+  dispatch(ClearErrorList());
+  dispatch(PassowordResetEmailStart());
+
+  try {
+    const res = await publicRequest.post("/user_auth/forgotpassword", {
+      email,
+    });
+
+    console.log(res);
+
+    if (res.status === 201) {
+      dispatch(PassowordResetEmailSuccess(res.data.msg));
+    }
+  } catch (e) {
+    if (e.response.status === 404) {
+      dispatch(
+        PassowordResetEmailFailed([{ path: "email", msg: e.response.data }])
+      );
+    } else {
+      dispatch(
+        PassowordResetEmailFailed([
+          { path: "serverError", msg: "Something went wrong" },
+        ])
+      );
+    }
+  }
+};
+
+export const ResetPassword = async (dispatch, newPassword, token) => {
+  dispatch(ClearErrorList());
+
+  dispatch(ResetPasswordStarted());
+
+  try {
+    const res = await publicRequest.post("/user_auth/resetpassword", {
+      refreshToken: token,
+      newPassword,
+    });
+
+    if (res.status === 200) {
+      dispatch(ResetPasswordSuccess(res.data.msg));
+    }
+  } catch (e) {
+    if (e.response.status === 404) {
+      dispatch(
+        ResetPasswordFailed([{ path: "password", msg: e.response.data }])
+      );
+    } else {
+      dispatch(
+        ResetPasswordFailed([
           { path: "serverError", msg: "Something went wrong" },
         ])
       );

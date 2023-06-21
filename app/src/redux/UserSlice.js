@@ -56,6 +56,35 @@ const UserSlice = createSlice({
     ClearErrorList: (state, action) => {
       state.errorList = [];
     },
+
+    PassowordResetEmailStart: (state, action) => {
+      state.isLoading = true;
+    },
+
+    PassowordResetEmailSuccess: (state, action) => {
+      state.isLoading = false;
+      state.error = false;
+      state.serverMessage = action.payload;
+    },
+    PassowordResetEmailFailed: (state, action) => {
+      state.isLoading = false;
+      state.errorList = action.payload;
+      state.error = true;
+    },
+
+    ResetPasswordStarted: (state, action) => {
+      state.isLoading = true;
+    },
+    ResetPasswordSuccess: (state, action) => {
+      state.isLoading = false;
+      state.error = false;
+      state.serverMessage = action.payload;
+    },
+    ResetPasswordFailed: (state, action) => {
+      state.isLoading = false;
+      state.errorList = action.payload;
+      state.error = true;
+    },
   },
 });
 
@@ -67,6 +96,12 @@ export const {
   LoginUserSuccess,
   LoginUserFailed,
   ClearErrorList,
+  PassowordResetEmailStart,
+  PassowordResetEmailSuccess,
+  PassowordResetEmailFailed,
+  ResetPasswordStarted,
+  ResetPasswordSuccess,
+  ResetPasswordFailed,
 } = UserSlice.actions;
 
 export default UserSlice.reducer;

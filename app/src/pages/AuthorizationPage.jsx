@@ -8,6 +8,8 @@ import { tablet } from "../responsive";
 import SmallScreenWidgets from "../components/SmallScreenWidgets";
 import LoginForm from "../components/LoginForm";
 import { useLocation } from "react-router-dom";
+import ForgotPasswordForm from "../components/ForgotPasswordForm";
+import ResetPasswordForm from "../components/ResetPasswordForm";
 
 const Container = styled.div`
   display: flex;
@@ -116,9 +118,11 @@ const AuthorizationPage = () => {
           <RegisterForm />
         ) : pathname === "/login" ? (
           <LoginForm />
-        ) : (
-          ""
-        )}
+        ) : pathname === `/forgot-password` ? (
+          <ForgotPasswordForm />
+        ) : pathname === `/reset-password` ? (
+          <ResetPasswordForm />
+        ) : null}
       </Right>
     </Container>
   );

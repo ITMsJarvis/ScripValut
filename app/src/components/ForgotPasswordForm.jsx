@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { mobile, tablet } from "../responsive";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { usepasswordview } from "../customhooks/Usepasswordview";
-import { Link, useLocation } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { mobile, tablet } from "../responsive";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { LoginUser } from "../apicalls/UserApicalls";
-import { ClearErrorList } from "../redux/UserSlice";
+import { PasswordReset } from "../apicalls/UserApicalls";
 
 const SlideIn = keyframes`
 
@@ -58,6 +57,12 @@ const Top = styled.div`
   }
 `;
 
+const Center = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
+
 const Heading = styled.h1`
   font-family: "Space Grotesk", sans-serif;
   font-style: normal;
@@ -72,23 +77,6 @@ const Subtitle = styled.p`
   font-weight: 700;
   font-size: 1.3em;
   ${mobile({ fontSize: "1.1em" })}
-`;
-
-const Links = styled(Link)`
-  font-family: "Space Grotesk", sans-serif;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 1.3em;
-  color: #4be94b;
-  display: flex;
-  justify-content: flex-end;
-  cursor: pointer;
-`;
-
-const Center = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
 `;
 
 const Form = styled.form`
@@ -139,6 +127,7 @@ const PasswordEye = styled(FontAwesomeIcon)`
   cursor: pointer;
   z-index: 3;
 `;
+
 const Button = styled.button`
   font-family: "Space Grotesk", sans-serif;
   width: 100%;
@@ -163,6 +152,13 @@ const ErrorMessage = styled.small`
   font-weight: 600;
 `;
 
+const SuccessMessage = styled.small`
+  font-family: "Space Grotesk", sans-serif;
+  color: #4be94b;
+  font-weight: 600;
+  font-size: 1em;
+`;
+
 const Loader = styled.div`
   width: 1.5em;
   height: 1.5em;
@@ -172,85 +168,75 @@ const Loader = styled.div`
   animation: ${Rotate} 2s infinite linear;
 `;
 
-const LoginForm = () => {
-  const { isLoading, errorList } = useSelector((state) => state.users);
+const Links = styled(Link)`
+  font-family: "Space Grotesk", sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 1.3em;
+  color: #4be94b;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  justify-content: flex-end;
+  cursor: pointer;
+`;
 
-  const [showPassword, ViewPassword] = usepasswordview();
+const ForgotPasswordForm = () => {
+  const { isLoading, errorList, serverMessage } = useSelector(
+    (state) => state.users
+  );
 
-  const [username, setUserName] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
 
   const dispatch = useDispatch();
 
-  const HandleLoginSumbit = (e) => {
+  const HandleResetEmail = (e) => {
     e.preventDefault();
 
-    const user = { username, password };
+    console.log(email);
 
-    LoginUser(dispatch, user);
+    PasswordReset(dispatch, email);
   };
 
   return (
     <Container>
       <Top>
-        <Heading>Login into your ScripVault account</Heading>
+        <Heading>Forgot Password ?</Heading>
         <div>
-          <Subtitle>Not a member of ScripVault?</Subtitle>
-          <Links to="/register" onClick={() => dispatch(ClearErrorList())}>
-            Register here
-          </Links>
+          <Subtitle>No worries, we'll send you reset instructions?</Subtitle>
         </div>
       </Top>
-      <Center>
-        <Form onSubmit={(e) => HandleLoginSumbit(e)}>
-          <InputBox>
-            <label>Username</label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUserName(e.target.value)}
-            />
-            {errorList.map(
-              (e, id) =>
-                e.path === "username" && (
-                  <ErrorMessage key={id}>{e.msg}</ErrorMessage>
-                )
-            )}
-          </InputBox>
 
+      <Center>
+        <Form onSubmit={(e) => HandleResetEmail(e)}>
           <InputBox>
-            <label>Password</label>
             <div>
               <input
-                type={showPassword}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <PasswordEye
-                icon={showPassword === "password" ? faEye : faEyeSlash}
-                onClick={() => ViewPassword()}
+                type="email"
+                placeholder="Enter your registered email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            {errorList.map(
-              (e, id) =>
-                e.path === "password" && (
-                  <ErrorMessage key={id}>{e.msg}</ErrorMessage>
-                )
-            )}
-
-            <Links to="/forgot-password">forgot password?</Links>
           </InputBox>
           {errorList.map(
             (e, id) =>
-              e.path === "serverError" && (
+              e.path === "email" && (
                 <ErrorMessage key={id}>{e.msg}</ErrorMessage>
               )
           )}
-          <Button type="submit">{isLoading ? <Loader /> : "Login"}</Button>
+          {serverMessage && <SuccessMessage>{serverMessage}</SuccessMessage>}
+          <Button type="submit">
+            {isLoading ? <Loader /> : "Reset password"}
+          </Button>
         </Form>
       </Center>
+      <Links to="/login">
+        <FontAwesomeIcon icon={faArrowLeft} />
+        Back to Login
+      </Links>
     </Container>
   );
 };
 
-export default LoginForm;
+export default ForgotPasswordForm;

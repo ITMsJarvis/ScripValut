@@ -172,7 +172,9 @@ export const ForgotPassword = async (req, res) => {
           button: {
             color: "#DC4D2F",
             text: "Reset your password",
-            link: "https://mailgen.js/reset?s=b350163a1a010d9729feb74992c1a010",
+            link: `${
+              req.headers.referer
+            }reset-password?token=${encodeURIComponent(refreshToken)}`,
           },
         },
         outro:
@@ -195,12 +197,36 @@ export const ForgotPassword = async (req, res) => {
       }
 
       return res.status(201).json({
-        msg: "Rest email sent on register mail id",
+        msg: "Passowrd reset email sent on registered mail id, Please check",
       });
     });
   } catch (error) {
     res
       .status(500)
       .json({ error: [{ path: "serverError", msg: "Something went wrong" }] });
+  }
+};
+
+export const ResetPassword = async (req, res) => {
+  const { refreshToken, newPassword } = req.body;
+
+  try {
+    const user = await User.findOne({ refreshToken });
+
+    if (!user) {
+      return res.status(404).json("Token is invalid,try reset mail again");
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    user.password = hashedPassword;
+
+    user.refreshToken = "";
+
+    await user.save();
+
+    res.status(200).json({ msg: "Password is reset successfully" });
+  } catch (err) {
+    res.status(500).json("Something went wrong");
   }
 };
