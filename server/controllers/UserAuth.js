@@ -230,3 +230,23 @@ export const ResetPassword = async (req, res) => {
     res.status(500).json("Something went wrong");
   }
 };
+
+export const UserLogout = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findOne({ _id: id });
+
+    if (!user) {
+      return res.status(404).json("You are not authorize");
+    }
+
+    user.refreshToken = "";
+
+    await user.save();
+
+    res.status(200).json({ msg: "User logout successfully" });
+  } catch (err) {
+    res.status(500).json("Something went wrong");
+  }
+};
