@@ -5,6 +5,7 @@ import {
   RefreshToken,
   RegisterUser,
   ResetPassword,
+  UpdateUser,
   UserLogout,
 } from "../controllers/UserAuth.js";
 import {
@@ -40,5 +41,9 @@ router.post("/resetPassword", UserPasswordValidator, ResetPassword);
 //User Logout
 
 router.post("/user_logout/:id", verifyTokenandUser, UserLogout);
+
+//Update User
+
+router.post("/user_update/:id", verifyTokenandUser, UpdateUser);
 
 export default router;

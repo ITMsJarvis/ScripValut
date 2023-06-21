@@ -250,3 +250,66 @@ export const UserLogout = async (req, res) => {
     res.status(500).json("Something went wrong");
   }
 };
+
+export const UpdateUser = async (req, res) => {
+  const id = req.params.id;
+  const mobileNumber = req.query.mobileNumber;
+  const gender = req.query.gender;
+  const address = req.query.address;
+  const DOB = req.query.dob;
+  const all = req.query.all;
+
+  const updatedAddress = {
+    address: req.body.address,
+  };
+
+  try {
+    let result;
+
+    const user = await User.findOne({ _id: id });
+
+    if (!user) {
+      return res.status(404).json("You are not authorize");
+    }
+
+    if (mobileNumber) {
+      result = await User.updateOne(
+        { _id: id },
+        { $push: { mobileNumber: req.body.mobileNumber } }
+      );
+    } else if (DOB) {
+      result = await User.updateOne(
+        { _id: id },
+        { $set: { dob: new Date(req.body.dob) } }
+      );
+    } else if (gender) {
+      result = await User.updateOne(
+        { _id: id },
+        { $set: { gender: req.body.gender } }
+      );
+    } else if (address) {
+      result = await User.updateOne(
+        { _id: id },
+        { $push: { address: req.body.address } }
+      );
+    } else if (all) {
+      result = await User.updateOne(
+        { _id: id },
+        {
+          $push: {
+            mobileNumber: req.body.mobileNumber,
+            address: updatedAddress,
+          },
+          $set: {
+            gender: req.body.gender,
+            dob: req.body.dob,
+          },
+        }
+      );
+    }
+
+    res.status(200).json(result);
+  } catch (e) {
+    res.status(500).json(e);
+  }
+};

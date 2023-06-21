@@ -1,14 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const user = JSON.parse(localStorage.getItem("user"));
+
 const UserSlice = createSlice({
   name: "user",
   initialState: {
-    userid: "",
-    name: "",
-    username: "",
-    email: "",
-    mobileNumber: [],
-    address: [],
+    userid: user?._id || "",
+    name: user?.name || "",
+    username: user?.username || "",
+    email: user?.email || "",
+    mobileNumber: user?.mobileNumber || [],
+    address: user?.address || [],
     error: false,
     isLoading: false,
     errorList: [],
