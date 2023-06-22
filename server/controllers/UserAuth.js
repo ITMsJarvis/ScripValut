@@ -253,14 +253,9 @@ export const UserLogout = async (req, res) => {
 
 export const UpdateUser = async (req, res) => {
   const id = req.params.id;
-  const mobileNumber = req.query.mobileNumber;
-  const gender = req.query.gender;
-  const address = req.query.address;
-  const DOB = req.query.dob;
-  const all = req.query.all;
 
   const updatedAddress = {
-    address: req.body.address,
+    detailedaddress: req.body.address,
   };
 
   try {
@@ -272,31 +267,31 @@ export const UpdateUser = async (req, res) => {
       return res.status(404).json("You are not authorize");
     }
 
-    if (mobileNumber) {
+    if (req.query.filter === "mobileNumber") {
       result = await User.updateOne(
         { _id: id },
-        { $push: { mobileNumber: req.body.mobileNumber } }
+        { $addToSet: { mobileNumber: req.body.mobileNumber } }
       );
-    } else if (DOB) {
+    } else if (req.query.filter === "dob") {
       result = await User.updateOne(
         { _id: id },
         { $set: { dob: new Date(req.body.dob) } }
       );
-    } else if (gender) {
+    } else if (req.query.filter === "gender") {
       result = await User.updateOne(
         { _id: id },
         { $set: { gender: req.body.gender } }
       );
-    } else if (address) {
+    } else if (req.query.filter === "address") {
       result = await User.updateOne(
         { _id: id },
-        { $push: { address: req.body.address } }
+        { $addToSet: { address: updatedAddress } }
       );
-    } else if (all) {
+    } else if (req.query.filter === "all") {
       result = await User.updateOne(
         { _id: id },
         {
-          $push: {
+          $addToSet: {
             mobileNumber: req.body.mobileNumber,
             address: updatedAddress,
           },
@@ -304,11 +299,12 @@ export const UpdateUser = async (req, res) => {
             gender: req.body.gender,
             dob: req.body.dob,
           },
-        }
+        },
+        { upsert: true }
       );
     }
 
-    res.status(200).json(result);
+    res.status(200).json({ msg: "User updated successfully" });
   } catch (e) {
     res.status(500).json(e);
   }

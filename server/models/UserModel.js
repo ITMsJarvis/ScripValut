@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import Portfolio from "./PortFolioModel.js";
 import WatchList from "./WatchlistModel.js";
-import AddressSchema from "./AddressSchema.js";
 
 const UserSchema = new mongoose.Schema(
   {
@@ -38,7 +37,7 @@ const UserSchema = new mongoose.Schema(
       type: Date,
     },
     address: {
-      type: [AddressSchema.schema],
+      type: Array,
       default: [],
     },
     portfolio: {
