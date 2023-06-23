@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import UserAuthRoutes from "./routes/UserAuthRoutes.js";
+import StockRoutes from "./routes/StockRoutes.js";
 import Connect from "./db/connect.js";
 
 dotenv.config();
@@ -14,6 +15,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use("/api/user_auth/", UserAuthRoutes);
+
+app.use("/api/stocks", StockRoutes);
 
 app.listen(PORT, () => {
   Connect();
