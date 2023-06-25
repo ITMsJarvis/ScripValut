@@ -10,6 +10,12 @@ import AuthorizationPage from "./pages/AuthorizationPage";
 import Home from "./pages/Home";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import Stocks from "./components/Stocks";
+import Investment from "./components/Investment";
+import StockHome from "./components/StockHome";
+import MutulaFundHome from "./components/MutulaFundHome";
+import MutualFund from "./components/MutualFund";
+import IndicesTable from "./components/IndicesTable";
 
 const Container = styled.main`
   display: flex;
@@ -46,7 +52,17 @@ function App() {
           <Route
             path="/"
             element={!username ? <Navigate to="/register" /> : <Home />}
-          />
+          >
+            <Route path="/explore" element={<Stocks />}>
+              <Route path="/explore/stocks" element={<StockHome />} />
+            </Route>
+            <Route path="/explore" element={<MutualFund />}>
+              <Route path="/explore/mutualfund" element={<MutulaFundHome />} />
+            </Route>
+            <Route path="/indices" element={<IndicesTable />} />
+
+            <Route path="/investment" element={<Investment />} />
+          </Route>
         </Routes>
       </Router>
     </Container>

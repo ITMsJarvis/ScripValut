@@ -1,7 +1,6 @@
 import React from "react";
-import Navbar from "../components/Navbar";
-import { Outlet } from "react-router-dom";
 import styled from "styled-components";
+import InstrumentTabs from "./InstrumentTabs";
 
 const Container = styled.div`
   display: flex;
@@ -10,13 +9,12 @@ const Container = styled.div`
   width: 100%;
 `;
 
-const Home = () => {
+const Investment = () => {
   return (
     <Container>
-      <Navbar />
-      <Outlet />
+      <InstrumentTabs />
     </Container>
   );
 };
 
-export default Home;
+export default Investment;

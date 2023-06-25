@@ -1,10 +1,12 @@
 import puppeteer from "puppeteer";
-
+// import StockList from "../data/stocks.json" assert { type: "json" };
+import mongoose from "mongoose";
+import axios from "axios";
 //Get Indices
 
 export const GetIndices = async (req, res) => {
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto("https://groww.in/indices");
 
@@ -193,5 +195,105 @@ export const AllSectorData = async (req, res) => {
     await browser.close();
   } catch (e) {
     res.status(500).send("Something went wrong");
+  }
+};
+
+//Add complete list of stocks from json file
+// export const AddStocks = async (req, res) => {
+//   const arrayOfObjects = StockList.data;
+
+//   try {
+//     const collection = mongoose.connection.collection("stocksdetails");
+//     collection.insertMany(arrayOfObjects, (err, result) => {
+//       if (err) {
+//         console.error(err);
+//         res.status(500).send(err);
+//       } else {
+//         console.log("Objects inserted successfully!");
+//         console.log(result);
+//         res.status(200).send("Success");
+//       }
+//     });
+//   } catch (e) {
+//     console.error(e);
+//     res.status(500).send(e);
+//   }
+// };
+
+export const GetStockDetails = async (req, res) => {
+  const stockName = req.query.stock_name;
+  console.log(stockName);
+
+  try {
+    const stock = await mongoose.connection
+      .collection("stocksdetails")
+      .find({ name: { $eq: stockName } })
+      .toArray();
+
+    const stock_symbol = stock[0]?.symbol;
+
+    console.log(stock_symbol);
+
+    console.log(
+      `https://telescope-stocks-options-price-charts.p.rapidapi.com/stocks/${stock_symbol}.NS`
+    );
+
+    if (stock_symbol) {
+      const options = {
+        method: "GET",
+        url: `https://telescope-stocks-options-price-charts.p.rapidapi.com/stocks/${stock_symbol}.NS`,
+        params: {
+          modules: "assetProfile,summaryProfile,price",
+        },
+        headers: {
+          "X-RapidAPI-Key": `${process.env.RapidAPI_KEY}`,
+          "X-RapidAPI-Host": `${process.env.RapidAPI_HOST}`,
+        },
+      };
+
+      const response = await axios.request(options);
+      res.status(200).send(response.data.quoteSummary.result[0]);
+    }
+  } catch (e) {
+    res.status(500).send(e);
+  }
+};
+
+export const ToptradedStocks = async (req, res) => {
+  try {
+    if (req.query.filter === "hot_stocks") {
+      const browser = await puppeteer.launch({ headless: "new" });
+      const page = await browser.newPage();
+      await page.goto("https://www.indmoney.com/stocks");
+
+      const title = await page.title();
+
+      const stock = await page.evaluate(() => {
+        const box = document.querySelectorAll(
+          ".flex.items-center.justify-center.flex-col"
+        );
+
+        const data = [];
+        box.forEach((ele) => {
+          const img = ele.querySelector("img").src;
+
+          const name = ele.querySelector("p:nth-child(1)")?.innerText;
+
+          const price = ele.querySelector("p:nth-child(2)")?.innerText;
+
+          const change = ele.querySelector("p:nth-child(3)")?.innerText;
+
+          data.push({ img, name, price, change, change });
+        });
+
+        return data;
+      });
+
+      await browser.close();
+
+      res.status(200).send(stock);
+    }
+  } catch (e) {
+    res.status(500).send(e);
   }
 };

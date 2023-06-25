@@ -1,22 +1,21 @@
 import React from "react";
-import Navbar from "../components/Navbar";
-import { Outlet } from "react-router-dom";
 import styled from "styled-components";
+import IndexWrapper from "./IndexWrapper";
 
 const Container = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  width: 100%;
+  width: 70%;
+  padding: 0 1em;
 `;
 
-const Home = () => {
+const StockHome = () => {
   return (
     <Container>
-      <Navbar />
-      <Outlet />
+      <IndexWrapper />
     </Container>
   );
 };
 
-export default Home;
+export default StockHome;
