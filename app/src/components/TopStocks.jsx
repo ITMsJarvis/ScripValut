@@ -8,6 +8,8 @@ import {
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { publicRequest } from "../apiRequest";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const Container = styled.div`
   width: 100%;
@@ -21,7 +23,9 @@ const Container = styled.div`
 
 const Top = styled.div`
   display: flex;
-  flex-direction: column;
+  align-items: ${(props) => props.type === "false" && "center"};
+  justify-content: ${(props) => props.type === "false" && "space-between"};
+  flex-direction: ${(props) => (props.type === "true" ? "column" : "row")};
   width: 100%;
   gap: 1em;
 `;
@@ -124,18 +128,20 @@ const TopStocks = ({ ...props }) => {
           signal,
         });
 
-        const mid_result = await publicRequest.get(`${props.mid_link}`, {
-          signal,
-        });
+        if (props.mid_link && props.small_link) {
+          const mid_result = await publicRequest.get(`${props.mid_link}`, {
+            signal,
+          });
 
-        const small_results = await publicRequest.get(`${props.small_link}`, {
-          signal,
-        });
+          const small_results = await publicRequest.get(`${props.small_link}`, {
+            signal,
+          });
+          setTopMidCap(mid_result.data);
+          setTopSmallCap(small_results.data);
+        }
 
         setIsLoading(false);
         setTopStocks(result.data);
-        setTopMidCap(mid_result.data);
-        setTopSmallCap(small_results.data);
       } catch (e) {
         setIsLoading(false);
         setError(true);
@@ -153,40 +159,54 @@ const TopStocks = ({ ...props }) => {
 
   return (
     <Container>
-      <Top>
+      <Top type={props.filter ? "true" : "false"}>
         <Title>{props.type}</Title>
-        <Filters>
-          <FilterButton
-            highlight={activeFilter}
-            onClick={() => setActiveFilter("large")}
-            style={{
-              color: activeFilter === "large" && "#4BE93B",
-              border: activeFilter === "large" && "1px solid #4BE93B",
-            }}
+        {props.filter ? (
+          <Filters>
+            <FilterButton
+              highlight={activeFilter}
+              onClick={() => setActiveFilter("large")}
+              style={{
+                color: activeFilter === "large" && "#4BE93B",
+                border: activeFilter === "large" && "1px solid #4BE93B",
+              }}
+            >
+              Large
+            </FilterButton>
+            <FilterButton
+              highlight={activeFilter}
+              onClick={() => setActiveFilter("mid")}
+              style={{
+                color: activeFilter === "mid" && "#4BE93B",
+                border: activeFilter === "mid" && "1px solid #4BE93B",
+              }}
+            >
+              Mid
+            </FilterButton>
+            <FilterButton
+              highlight={activeFilter}
+              onClick={() => setActiveFilter("small")}
+              style={{
+                color: activeFilter === "small" && "#4BE93B",
+                border: activeFilter === "small" && "1px solid #4BE93B",
+              }}
+            >
+              Small
+            </FilterButton>
+          </Filters>
+        ) : (
+          <Link
+            to={
+              props.type === "52 Week High"
+                ? "/market/52-week-high"
+                : props.type === "52 Week Low"
+                ? "/market/53-week-low"
+                : null
+            }
           >
-            Large
-          </FilterButton>
-          <FilterButton
-            highlight={activeFilter}
-            onClick={() => setActiveFilter("mid")}
-            style={{
-              color: activeFilter === "mid" && "#4BE93B",
-              border: activeFilter === "mid" && "1px solid #4BE93B",
-            }}
-          >
-            Mid
-          </FilterButton>
-          <FilterButton
-            highlight={activeFilter}
-            onClick={() => setActiveFilter("small")}
-            style={{
-              color: activeFilter === "small" && "#4BE93B",
-              border: activeFilter === "small" && "1px solid #4BE93B",
-            }}
-          >
-            Small
-          </FilterButton>
-        </Filters>
+            see more
+          </Link>
+        )}
       </Top>
 
       {activeFilter === "large" && (
@@ -201,9 +221,13 @@ const TopStocks = ({ ...props }) => {
             ref={sliderRef}
             style={{ transform: `translateX(${translateX}px)` }}
           >
-            {TopStocks?.map((stocks, i) => (
-              <StockViewBox key={i} {...stocks} />
-            ))}
+            {TopStocks !== null
+              ? TopStocks?.slice(0, 30).map((stocks, i) => (
+                  <StockViewBox key={i} {...stocks} />
+                ))
+              : Array.from({ length: 8 }).map((s, i) => (
+                  <Skeleton width={160} height={180} />
+                ))}
           </Slider>
         </Bottom>
       )}
@@ -248,5 +272,8 @@ const TopStocks = ({ ...props }) => {
     </Container>
   );
 };
+
+// min-width: 10rem;
+//   min-height: 180px;
 
 export default TopStocks;

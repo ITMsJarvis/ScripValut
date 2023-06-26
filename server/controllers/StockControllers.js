@@ -259,51 +259,37 @@ export const GetStockDetails = async (req, res) => {
   }
 };
 
-export const ToptradedStocks = async (req, res) => {
+export const Get52WeekSummary = async (req, res) => {
+  const filter = req.query.filter;
+
   try {
-    if (req.query.filter === "hot_stocks") {
-      const browser = await puppeteer.launch({ headless: "new" });
-      const page = await browser.newPage();
-      await page.goto(
-        "https://upstox.com/stocks/hdfc-bank-ltd-share-price/INE040A01034/"
-      );
+    const browser = await puppeteer.launch({ headless: "new" });
+    const page = await browser.newPage();
+    await page.goto(`https://ticker.finology.in/market/${filter}`);
 
-      const title = await page.title();
+    const title = await page.title();
 
-      // console.log(newList);
+    const data = await page.evaluate(() => {
+      const rows = document.querySelectorAll("tr");
 
-      const stock = await page.evaluate(() => {
-        const box = document.querySelectorAll(".top-indices-list-item");
+      const list = [];
 
-        const data = [];
-        box.forEach((ele) => {
-          const name = ele.querySelector(".stock-heading")?.innerText;
+      rows.forEach((row) => {
+        const companyName = row.querySelector("td:nth-child(2)")?.innerText;
 
-          const price = ele.querySelector(".stock-price")?.innerText;
+        const currentPrice = row.querySelector("td:nth-child(3)")?.innerText;
 
-          const change = ele.querySelector(
-            ".stock-updates:nth-child(1)"
-          )?.innerText;
-
-          const per_chg = ele.querySelector(
-            ".stock-updates:nth-child(2)"
-          )?.innerText;
-
-          data.push({ name, price, change, per_chg });
-        });
-
-        return data;
+        const day_high = row.querySelector("td:nth-child(4)")?.innerText;
+        list.push({ companyName, currentPrice, day_high });
       });
 
-      // console.log(stock);
+      return list;
+    });
 
-      // console.log(title);
+    await browser.close();
 
-      await browser.close();
-
-      res.status(200).send(stock);
-    }
+    res.status(200).send(data.splice(2));
   } catch (e) {
-    res.status(500).send(e);
+    res.status(500).send("Somethinh went wrong");
   }
 };

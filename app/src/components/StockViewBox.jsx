@@ -84,22 +84,30 @@ const StockViewBox = ({ ...props }) => {
         </div>
 
         <StockName>
-          {props.companyName.length > 20
+          {props.companyName?.length > 20
             ? `${props.companyName.slice(0, 10)}...`
             : props.companyName}
         </StockName>
       </Top>
 
       <Bottom>
-        <Price>{props.currentPrice}</Price>
-        <PriceChange
-          style={{
-            color:
-              parseFloat(props.per_chg.replace(",", "")) > 0 ? "green" : "red",
-          }}
-        >
-          {props.per_chg}
-        </PriceChange>
+        <Price>
+          {!props.currentPrice?.includes("₹")
+            ? `₹${props.currentPrice}`
+            : `${props.currentPrice}`}
+        </Price>
+        {props.per_chg && (
+          <PriceChange
+            style={{
+              color:
+                parseFloat(props.per_chg.replace(",", "")) > 0
+                  ? "green"
+                  : "red",
+            }}
+          >
+            ₹ {props.per_chg}
+          </PriceChange>
+        )}
       </Bottom>
     </Container>
   );

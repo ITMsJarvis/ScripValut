@@ -19,13 +19,25 @@ const StockHome = () => {
       mid_link: "stocks/alltopstocks?category=top-gainers&index=GIDXNIFMDCP100",
       small_link:
         "stocks/alltopstocks?category=top-gainers&index=GIDXNIFSMCP100",
+      filter: true,
     },
     {
-      type: "Top losers",
+      type: "Top Losers",
       large_link: "stocks/alltopstocks?category=top-losers&index=GIDXNIFTY100",
       mid_link: "stocks/alltopstocks?category=top-losers&index=GIDXNIFMDCP100",
       small_link:
         "stocks/alltopstocks?category=top-losers&index=GIDXNIFSMCP100",
+      filter: true,
+    },
+    {
+      type: "53 Week High",
+      large_link: "stocks/fifty-two-week?filter=52-week-high",
+      filter: false,
+    },
+    {
+      type: "53 Week Low",
+      large_link: "stocks/fifty-two-week?filter=52-week-low",
+      filter: false,
     },
   ];
 
@@ -33,7 +45,7 @@ const StockHome = () => {
     <Container>
       <IndexWrapper />
       {TopDataCategory.map((category, i) => (
-        <TopStocks {...category} />
+        <TopStocks key={i} {...category} />
       ))}
     </Container>
   );
