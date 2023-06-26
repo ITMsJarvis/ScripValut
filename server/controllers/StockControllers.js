@@ -264,30 +264,40 @@ export const ToptradedStocks = async (req, res) => {
     if (req.query.filter === "hot_stocks") {
       const browser = await puppeteer.launch({ headless: "new" });
       const page = await browser.newPage();
-      await page.goto("https://www.indmoney.com/stocks");
+      await page.goto(
+        "https://upstox.com/stocks/hdfc-bank-ltd-share-price/INE040A01034/"
+      );
 
       const title = await page.title();
 
+      // console.log(newList);
+
       const stock = await page.evaluate(() => {
-        const box = document.querySelectorAll(
-          ".flex.items-center.justify-center.flex-col"
-        );
+        const box = document.querySelectorAll(".top-indices-list-item");
 
         const data = [];
         box.forEach((ele) => {
-          const img = ele.querySelector("img").src;
+          const name = ele.querySelector(".stock-heading")?.innerText;
 
-          const name = ele.querySelector("p:nth-child(1)")?.innerText;
+          const price = ele.querySelector(".stock-price")?.innerText;
 
-          const price = ele.querySelector("p:nth-child(2)")?.innerText;
+          const change = ele.querySelector(
+            ".stock-updates:nth-child(1)"
+          )?.innerText;
 
-          const change = ele.querySelector("p:nth-child(3)")?.innerText;
+          const per_chg = ele.querySelector(
+            ".stock-updates:nth-child(2)"
+          )?.innerText;
 
-          data.push({ img, name, price, change, change });
+          data.push({ name, price, change, per_chg });
         });
 
         return data;
       });
+
+      // console.log(stock);
+
+      // console.log(title);
 
       await browser.close();
 

@@ -1,7 +1,16 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { useGetIndices } from "../customhooks/useGetIndices";
+import { useLocation } from "react-router-dom";
+import {
+  GetIndicesFailed,
+  GetIndicesStart,
+  GetIndicesSuccess,
+} from "../redux/StockDetailsSlice";
+import { publicRequest } from "../apiRequest";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const Container = styled.div`
   width: 100%;
@@ -41,10 +50,6 @@ const Column = styled.div`
   min-width: 11.66%;
   display: flex;
   align-items: center;
-
-  p {
-    color: ${(props) => (props.type === "positive" ? "#4BE93B" : "red")};
-  }
 `;
 
 const RowDescription = styled.div`
@@ -68,9 +73,38 @@ const IndexImage = styled.img`
 `;
 
 const Table = () => {
-  const [IndicesData] = useGetIndices();
-
   const { indices, isLoading, error } = useSelector((state) => state.stocks);
+
+  const dispatch = useDispatch();
+
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const signal = controller.signal;
+
+    dispatch(GetIndicesStart());
+
+    const getData = async () => {
+      try {
+        const res = await publicRequest.get("/stocks/allindices", { signal });
+
+        dispatch(GetIndicesSuccess(res.data));
+      } catch (e) {
+        console.log(e);
+        dispatch(GetIndicesFailed());
+      }
+    };
+
+    if (pathname === "/indices") {
+      getData();
+    }
+
+    return () => {
+      controller.abort();
+    };
+  }, [pathname]);
 
   return (
     <Container>
@@ -83,25 +117,35 @@ const Table = () => {
         <ColumnHeader>Open</ColumnHeader>
         <ColumnHeader>Prev. Close</ColumnHeader>
       </TableHeader>
-      {indices.map((index, id) => (
-        <TableRow key={id}>
-          <RowDescription>
-            <IndexImage src={index.logo} />
-            <p>{index.name}</p>
-          </RowDescription>
-          <Column>{index.last_price}</Column>
-          <Column>
-            <p type={parseFloat(index.day_chg) > 0 ? "positive" : "negative"}>
-              {index.day_chg}({index.per_chg})
-            </p>
-          </Column>
+      {indices.length === 0
+        ? Array.from({ length: 8 }).map((_, id) => (
+            <Skeleton key={id} minWidth={1074} height={50} />
+          ))
+        : indices.map((index, id) => (
+            <TableRow key={id}>
+              <RowDescription>
+                <IndexImage src={index.logo} />
+                <p>{index.name}</p>
+              </RowDescription>
+              <Column>{index.last_price}</Column>
+              <Column>
+                <p
+                  style={{
+                    color:
+                      parseFloat(index.day_chg) > 0 ? "#37c327" : "#f62b2b",
+                  }}
+                >
+                  {console.log(parseFloat(index.day_chg) > 0)}
+                  {index.day_chg}({index.per_chg})
+                </p>
+              </Column>
 
-          <Column>{index.high}</Column>
-          <Column>{index.low}</Column>
-          <Column>{index.open}</Column>
-          <Column>{index.pre_close}</Column>
-        </TableRow>
-      ))}
+              <Column>{index.high}</Column>
+              <Column>{index.low}</Column>
+              <Column>{index.open}</Column>
+              <Column>{index.pre_close}</Column>
+            </TableRow>
+          ))}
     </Container>
   );
 };

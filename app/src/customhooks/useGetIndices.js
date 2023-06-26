@@ -6,11 +6,14 @@ import {
   GetIndicesSuccess,
 } from "../redux/StockDetailsSlice";
 import { publicRequest } from "../apiRequest";
+import { useLocation } from "react-router-dom";
 
 export const useGetIndices = () => {
   const [IndicesData, setIndicesData] = useState([]);
 
   const dispatch = useDispatch();
+
+  const { pathname } = useLocation();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -37,7 +40,7 @@ export const useGetIndices = () => {
     return () => {
       controller.abort();
     };
-  }, []);
+  }, [pathname]);
 
-  return IndicesData;
+  return [IndicesData];
 };
