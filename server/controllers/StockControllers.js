@@ -73,6 +73,9 @@ export const GetIndices = async (req, res) => {
       });
     }
 
+    // const cookies = await page.cookies();
+    // cookies.forEach(page.deleteCookie);
+
     await browser.close();
 
     res.status(200).send(indian_indices);
@@ -132,6 +135,8 @@ export const AllTopstocksAllCap = async (req, res) => {
 
       return rowData;
     });
+    // const cookies = await page.cookies();
+    // cookies.forEach(page.deleteCookie);
     await browser.close();
     res.status(200).send(data);
   } catch (e) {
@@ -191,6 +196,8 @@ export const AllSectorData = async (req, res) => {
     // console.log(title);
 
     res.status(200).send(category);
+    // const cookies = await page.cookies();
+    // cookies.forEach(page.deleteCookie);
 
     await browser.close();
   } catch (e) {

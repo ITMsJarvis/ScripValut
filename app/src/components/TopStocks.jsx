@@ -200,9 +200,10 @@ const TopStocks = ({ ...props }) => {
               props.type === "52 Week High"
                 ? "/market/52-week-high"
                 : props.type === "52 Week Low"
-                ? "/market/53-week-low"
+                ? "/market/52-week-low"
                 : null
             }
+            style={{ textDecoration: "none", color: "#4BE93B" }}
           >
             see more
           </Link>

@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { FiftyWeekData } from "../apicalls/StockApicalls";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import TableForWeek from "./TableForWeek";
 
 const Container = styled.div`
   width: 70%;
@@ -18,6 +19,8 @@ const Title = styled.h2`
 `;
 
 const FiftyTwoWeekComponent = () => {
+  const { fiftyTwoWeekHighData, fiftyTwoWeekLowData, isLoading, error } =
+    useSelector((state) => state.stocks);
   const dispatch = useDispatch();
 
   const { pathname } = useLocation();
@@ -46,7 +49,18 @@ const FiftyTwoWeekComponent = () => {
 
   return (
     <Container>
-      <Title>All Indices</Title>
+      <Title>
+        {status === "52-week-high" ? "52 Week High" : "52 Week Low"}
+      </Title>
+      <p>
+        Following is the list of companies for 52 Week
+        {status === "52-week-high" ? " high" : " low"} as of today
+      </p>
+      {status === "52-week-high" ? (
+        <TableForWeek data={fiftyTwoWeekHighData} />
+      ) : (
+        <TableForWeek data={fiftyTwoWeekLowData} />
+      )}
     </Container>
   );
 };

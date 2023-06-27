@@ -30,12 +30,12 @@ const StockHome = () => {
       filter: true,
     },
     {
-      type: "53 Week High",
+      type: "52 Week High",
       large_link: "stocks/fifty-two-week?filter=52-week-high",
       filter: false,
     },
     {
-      type: "53 Week Low",
+      type: "52 Week Low",
       large_link: "stocks/fifty-two-week?filter=52-week-low",
       filter: false,
     },
