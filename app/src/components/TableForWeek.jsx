@@ -74,13 +74,18 @@ const TableForWeek = ({ ...props }) => {
         <ColumnHeader>
           Price <small> ₹</small>
         </ColumnHeader>
-        <ColumnHeader>Day High</ColumnHeader>
+        <ColumnHeader>
+          {parseFloat(props.data[0]?.market_price) >=
+          parseFloat(props.data[0]?.day_high_or_low)
+            ? "Day Low"
+            : "Day High"}
+        </ColumnHeader>
       </TableHeader>
       {props.data?.map((stocks, i) => (
         <TableRow key={i}>
-          <RowDescription>{stocks.companyName}</RowDescription>
-          <Column>{stocks.currentPrice}</Column>
-          <Column>{stocks.day_high}</Column>
+          <RowDescription>{stocks.company_name}</RowDescription>
+          <Column>{stocks.market_price}</Column>
+          <Column>{stocks.day_high_or_low}</Column>
         </TableRow>
       ))}
     </Container>

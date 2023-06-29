@@ -84,17 +84,17 @@ const StockViewBox = ({ ...props }) => {
         </div>
 
         <StockName>
-          {props.companyName?.length > 20
-            ? `${props.companyName.slice(0, 10)}...`
-            : props.companyName}
+          {props.company_name?.length > 20
+            ? `${props.company_name.slice(0, 10)}...`
+            : props.company_name}
         </StockName>
       </Top>
 
       <Bottom>
         <Price>
-          {!props.currentPrice?.includes("₹")
-            ? `₹${props.currentPrice}`
-            : `${props.currentPrice}`}
+          {!props.market_price?.includes("₹")
+            ? `₹${props.market_price}`
+            : `${props.market_price}`}
         </Price>
         {props.per_chg && (
           <PriceChange

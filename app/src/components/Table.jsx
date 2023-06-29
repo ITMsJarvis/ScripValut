@@ -125,9 +125,9 @@ const Table = () => {
             <TableRow key={id}>
               <RowDescription>
                 <IndexImage src={index.logo} />
-                <p>{index.name}</p>
+                <p>{index.company}</p>
               </RowDescription>
-              <Column>{index.last_price}</Column>
+              <Column>{index.last_trade}</Column>
               <Column>
                 <p
                   style={{
@@ -136,14 +136,14 @@ const Table = () => {
                   }}
                 >
                   {console.log(parseFloat(index.day_chg) > 0)}
-                  {index.day_chg}({index.per_chg})
+                  {index.day_chg}
                 </p>
               </Column>
 
               <Column>{index.high}</Column>
               <Column>{index.low}</Column>
               <Column>{index.open}</Column>
-              <Column>{index.pre_close}</Column>
+              <Column>{index.prev_close}</Column>
             </TableRow>
           ))}
     </Container>

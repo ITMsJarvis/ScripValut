@@ -109,15 +109,15 @@ const IndexWrapper = () => {
           ) : (
             indices?.slice(0, 4).map((index, id) => (
               <Widgets key={id}>
-                <IndexName>{index.name}</IndexName>
+                <IndexName>{index.company}</IndexName>
                 <WidgetsBottom>
-                  <p>{index.last_price}</p>
+                  <p>{index.last_trade}</p>
                   <PercentageChange
                     change={
                       parseFloat(index.day_chg) > 0 ? "positive" : "negative"
                     }
                   >
-                    {index.day_chg} ({index.per_chg})
+                    {index.day_chg}
                   </PercentageChange>
                 </WidgetsBottom>
               </Widgets>

@@ -15,28 +15,34 @@ const StockHome = () => {
   const TopDataCategory = [
     {
       type: "Top Gainers",
-      large_link: "stocks/alltopstocks?category=top-gainers&index=GIDXNIFTY100",
-      mid_link: "stocks/alltopstocks?category=top-gainers&index=GIDXNIFMDCP100",
+      large_link:
+        "https://my-stock-api.onrender.com/topstocks/top-gainers/GIDXNIFTY100",
+      mid_link:
+        "https://my-stock-api.onrender.com/topstocks/top-gainers/GIDXNIFMDCP100",
       small_link:
-        "stocks/alltopstocks?category=top-gainers&index=GIDXNIFSMCP100",
+        "https://my-stock-api.onrender.com/topstocks/top-gainers/GIDXNIFSMCP100",
       filter: true,
     },
     {
       type: "Top Losers",
-      large_link: "stocks/alltopstocks?category=top-losers&index=GIDXNIFTY100",
-      mid_link: "stocks/alltopstocks?category=top-losers&index=GIDXNIFMDCP100",
+      large_link:
+        "https://my-stock-api.onrender.com/topstocks/top-losers/GIDXNIFTY100",
+      mid_link:
+        "https://my-stock-api.onrender.com/topstocks/top-losers/GIDXNIFMDCP100",
       small_link:
-        "stocks/alltopstocks?category=top-losers&index=GIDXNIFSMCP100",
+        "https://my-stock-api.onrender.com/topstocks/top-losers/GIDXNIFSMCP100",
       filter: true,
     },
     {
       type: "52 Week High",
-      large_link: "stocks/fifty-two-week?filter=52-week-high",
+      large_link:
+        "https://my-stock-api.onrender.com/fifty-two-week-data/52-week-high",
       filter: false,
     },
     {
       type: "52 Week Low",
-      large_link: "stocks/fifty-two-week?filter=52-week-low",
+      large_link:
+        "https://my-stock-api.onrender.com/fifty-two-week-data/52-week-low",
       filter: false,
     },
   ];

@@ -124,18 +124,14 @@ const TopStocks = ({ ...props }) => {
 
     const getData = async () => {
       try {
-        const result = await publicRequest.get(`${props.large_link}`, {
-          signal,
-        });
+        const result = await publicRequest.get(`${props.large_link}`);
+
+        console.log(result.data);
 
         if (props.mid_link && props.small_link) {
-          const mid_result = await publicRequest.get(`${props.mid_link}`, {
-            signal,
-          });
+          const mid_result = await publicRequest.get(`${props.mid_link}`);
 
-          const small_results = await publicRequest.get(`${props.small_link}`, {
-            signal,
-          });
+          const small_results = await publicRequest.get(`${props.small_link}`);
           setTopMidCap(mid_result.data);
           setTopSmallCap(small_results.data);
         }
@@ -223,11 +219,11 @@ const TopStocks = ({ ...props }) => {
             style={{ transform: `translateX(${translateX}px)` }}
           >
             {TopStocks !== null
-              ? TopStocks?.slice(0, 30).map((stocks, i) => (
+              ? TopStocks.map((stocks, i) => (
                   <StockViewBox key={i} {...stocks} />
                 ))
               : Array.from({ length: 8 }).map((s, i) => (
-                  <Skeleton width={160} height={180} />
+                  <Skeleton key={i} width={160} height={180} />
                 ))}
           </Slider>
         </Bottom>

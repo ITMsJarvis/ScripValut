@@ -7,6 +7,7 @@ import {
 } from "../redux/StockDetailsSlice";
 import { publicRequest } from "../apiRequest";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 export const useGetIndices = () => {
   const [IndicesData, setIndicesData] = useState([]);
@@ -24,7 +25,11 @@ export const useGetIndices = () => {
 
     const getData = async () => {
       try {
-        const res = await publicRequest.get("/stocks/allindices", { signal });
+        const res = await publicRequest.get(
+          "https://my-stock-api.onrender.com/allindices",
+          { signal }
+        );
+        console.log(res.data);
 
         setIndicesData(res.data);
 
