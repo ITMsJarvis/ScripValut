@@ -124,7 +124,7 @@ const Table = () => {
         : indices.map((index, id) => (
             <TableRow key={id}>
               <RowDescription>
-                <IndexImage src={index.logo} />
+                <IndexImage src="https://assets-netstorage.groww.in/stock-assets/logos/NSE.png" />
                 <p>{index.company}</p>
               </RowDescription>
               <Column>{index.last_trade}</Column>

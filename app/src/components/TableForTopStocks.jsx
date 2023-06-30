@@ -58,15 +58,19 @@ const RowDescription = styled.div`
   align-items: center;
   font-weight: 500;
   gap: 1em;
+  padding: 1em;
 `;
 const Description = styled.div`
   flex: 2;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   font-weight: 500;
+  padding: 1em;
 `;
 
-const TableForWeek = ({ ...props }) => {
+const TableForTopStocks = (props) => {
+  console.log(props);
+
   return (
     <Container>
       <TableHeader>
@@ -75,21 +79,24 @@ const TableForWeek = ({ ...props }) => {
           Price <small> ₹</small>
         </ColumnHeader>
         <ColumnHeader>
-          {parseFloat(props.data[0]?.market_price) >=
-          parseFloat(props.data[0]?.day_high_or_low)
+          {props.category === "52 Week High"
+            ? "Day High"
+            : props.category === "52 Week Low"
             ? "Day Low"
-            : "Day High"}
+            : props.category === "Top Gainers"
+            ? "Per Change"
+            : "Per Change"}
         </ColumnHeader>
       </TableHeader>
-      {props.data?.map((stocks, i) => (
+      {props.table?.map((row, i) => (
         <TableRow key={i}>
-          <RowDescription>{stocks.company_name}</RowDescription>
-          <Column>{stocks.market_price}</Column>
-          <Column>{stocks.day_high_or_low}</Column>
+          <RowDescription>{row.company_name}</RowDescription>
+          <Column>{row.market_price}</Column>
+          <Column>{row.per_chg}</Column>
         </TableRow>
       ))}
     </Container>
   );
 };
 
-export default TableForWeek;
+export default TableForTopStocks;

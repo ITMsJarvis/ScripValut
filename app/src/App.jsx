@@ -16,7 +16,7 @@ import StockHome from "./components/StockHome";
 import MutulaFundHome from "./components/MutulaFundHome";
 import MutualFund from "./components/MutualFund";
 import IndicesTable from "./components/IndicesTable";
-import FiftyTwoWeekComponent from "./components/FiftyTwoWeekComponent";
+import TableComponent from "./components/TableComponent";
 
 const Container = styled.main`
   display: flex;
@@ -61,7 +61,7 @@ function App() {
               <Route path="/explore/mutualfund" element={<MutulaFundHome />} />
             </Route>
             <Route path="/indices" element={<IndicesTable />} />
-            <Route path="/market/:status" element={<FiftyTwoWeekComponent />} />
+            <Route path="/market/:status" element={<TableComponent />} />
 
             <Route path="/investment" element={<Investment />} />
           </Route>

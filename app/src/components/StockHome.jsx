@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import IndexWrapper from "./IndexWrapper";
-import TopStocks from "./TopStocks";
+import CompanyBox from "./CompanyBox";
 
 const Container = styled.div`
   display: flex;
@@ -12,47 +12,34 @@ const Container = styled.div`
 `;
 
 const StockHome = () => {
-  const TopDataCategory = [
-    {
-      type: "Top Gainers",
-      large_link:
-        "https://my-stock-api.onrender.com/topstocks/top-gainers/GIDXNIFTY100",
-      mid_link:
-        "https://my-stock-api.onrender.com/topstocks/top-gainers/GIDXNIFMDCP100",
-      small_link:
-        "https://my-stock-api.onrender.com/topstocks/top-gainers/GIDXNIFSMCP100",
-      filter: true,
-    },
-    {
-      type: "Top Losers",
-      large_link:
-        "https://my-stock-api.onrender.com/topstocks/top-losers/GIDXNIFTY100",
-      mid_link:
-        "https://my-stock-api.onrender.com/topstocks/top-losers/GIDXNIFMDCP100",
-      small_link:
-        "https://my-stock-api.onrender.com/topstocks/top-losers/GIDXNIFSMCP100",
-      filter: true,
-    },
-    {
-      type: "52 Week High",
-      large_link:
-        "https://my-stock-api.onrender.com/fifty-two-week-data/52-week-high",
-      filter: false,
-    },
-    {
-      type: "52 Week Low",
-      large_link:
-        "https://my-stock-api.onrender.com/fifty-two-week-data/52-week-low",
-      filter: false,
-    },
-  ];
-
   return (
     <Container>
       <IndexWrapper />
-      {TopDataCategory.map((category, i) => (
-        <TopStocks key={i} {...category} />
-      ))}
+
+      <CompanyBox
+        info={{
+          type: "Top Gainers",
+          link: "https://my-stock-api.onrender.com/topstocks/top-gainers?limit=200",
+        }}
+      />
+      <CompanyBox
+        info={{
+          type: "Top Losers",
+          link: "https://my-stock-api.onrender.com/topstocks/top-losers?limit=200",
+        }}
+      />
+      <CompanyBox
+        info={{
+          type: "52 Week High",
+          link: "https://my-stock-api.onrender.com/topstocks/52-week-high?limit=200",
+        }}
+      />
+      <CompanyBox
+        info={{
+          type: "52 Week Low",
+          link: "https://my-stock-api.onrender.com/topstocks/52-week-low?limit=200",
+        }}
+      />
     </Container>
   );
 };

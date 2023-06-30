@@ -5,8 +5,8 @@ import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 
 const Container = styled.div`
-  min-width: 10rem;
-  min-height: 180px;
+  width: 11.29rem;
+  min-height: 200px;
   padding: 1em;
   border-radius: 0.5em;
   box-shadow: 0px 0px 9px 1px rgba(0, 0, 0, 0.1);
@@ -54,6 +54,13 @@ const Price = styled.p`
 `;
 const PriceChange = styled.p`
   font-size: 0.9em;
+  background-color: #d5fcd0;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border-radius: 5px;
 `;
 
 const StockViewBox = ({ ...props }) => {
@@ -91,21 +98,21 @@ const StockViewBox = ({ ...props }) => {
       </Top>
 
       <Bottom>
-        <Price>
-          {!props.market_price?.includes("₹")
-            ? `₹${props.market_price}`
-            : `${props.market_price}`}
-        </Price>
-        {props.per_chg && (
+        <Price>₹ {props.market_price}</Price>
+        {props.type !== "week" && (
           <PriceChange
             style={{
               color:
-                parseFloat(props.per_chg.replace(",", "")) > 0
-                  ? "green"
+                parseFloat(props.per_chg.replace("%", "")) > 0
+                  ? "#3ec22f"
                   : "red",
+              backgroundColor:
+                parseFloat(props.per_chg.replace("%", "")) > 0
+                  ? "#d5fcd0"
+                  : "#fcd0d0",
             }}
           >
-            ₹ {props.per_chg}
+            {props.per_chg}
           </PriceChange>
         )}
       </Bottom>

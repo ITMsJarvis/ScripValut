@@ -6,6 +6,8 @@ const StockDetailSlice = createSlice({
     indices: [],
     fiftyTwoWeekHighData: [],
     fiftyTwoWeekLowData: [],
+    top_gainers: [],
+    top_losers: [],
     error: false,
     isLoading: true,
   },
@@ -22,19 +24,51 @@ const StockDetailSlice = createSlice({
       state.error = true;
     },
 
-    GetFiftyTwoweekDataStart: (state, action) => {
+    GetTopGainnersStart: (state, action) => {
       state.isLoading = true;
     },
-    GetFiftyTwoweekDataSuccess: (state, action) => {
+    GetTopGainersSuccess: (state, action) => {
       state.isLoading = false;
-
-      if (action.payload.type === "high") {
-        state.fiftyTwoWeekHighData = action.payload.data;
-      } else {
-        state.fiftyTwoWeekLowData = action.payload.data;
-      }
+      state.error = false;
+      state.top_gainers = action.payload;
     },
-    GetFiftyTwoweekDataFailed: (state, action) => {
+    GetTopGainersFailure: (state, action) => {
+      (state.isLoading = false), (state.error = true);
+    },
+    GetTopLosersStart: (state, action) => {
+      state.isLoading = true;
+    },
+    GetTopLosersSuccess: (state, action) => {
+      state.isLoading = false;
+      state.error = false;
+      state.top_losers = action.payload;
+    },
+    GetTopLosersFailure: (state, action) => {
+      state.isLoading = false;
+      state.error = true;
+    },
+
+    GetFiftyTwoWeekHighStart: (state, action) => {
+      state.isLoading = true;
+    },
+    GetFiftyTwoWeekHighSuccess: (state, action) => {
+      state.isLoading = false;
+      state.error = false;
+      state.fiftyTwoWeekHighData = action.payload;
+    },
+    GetFiftyTwoweekHighFailed: (state, action) => {
+      state.isLoading = false;
+      state.error = true;
+    },
+    GetFiftyTwoWeekLowStart: (state, action) => {
+      state.isLoading = true;
+    },
+    GetFiftyTwoWeekLowSuccess: (state, action) => {
+      state.isLoading = false;
+      state.error = false;
+      state.fiftyTwoWeekLowData = action.payload;
+    },
+    GetFiftyTwoWeeLowFailed: (state, action) => {
       state.isLoading = false;
       state.error = true;
     },
@@ -45,9 +79,18 @@ export const {
   GetIndicesStart,
   GetIndicesSuccess,
   GetIndicesFailed,
-  GetFiftyTwoweekDataStart,
-  GetFiftyTwoweekDataSuccess,
-  GetFiftyTwoweekDataFailed,
+  GetTopGainnersStart,
+  GetTopGainersSuccess,
+  GetTopGainersFailure,
+  GetTopLosersStart,
+  GetTopLosersFailure,
+  GetTopLosersSuccess,
+  GetFiftyTwoWeekHighStart,
+  GetFiftyTwoWeekHighSuccess,
+  GetFiftyTwoweekHighFailed,
+  GetFiftyTwoWeekLowStart,
+  GetFiftyTwoWeekLowSuccess,
+  GetFiftyTwoWeeLowFailed,
 } = StockDetailSlice.actions;
 
 export default StockDetailSlice.reducer;
