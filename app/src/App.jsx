@@ -17,6 +17,7 @@ import MutulaFundHome from "./components/MutulaFundHome";
 import MutualFund from "./components/MutualFund";
 import IndicesTable from "./components/IndicesTable";
 import TableComponent from "./components/TableComponent";
+import StockPage from "./pages/StockPage";
 
 const Container = styled.main`
   display: flex;
@@ -64,6 +65,8 @@ function App() {
             <Route path="/market/:status" element={<TableComponent />} />
 
             <Route path="/investment" element={<Investment />} />
+
+            <Route path="/stock/:name" element={<StockPage />} />
           </Route>
         </Routes>
       </Router>

@@ -8,6 +8,7 @@ const StockDetailSlice = createSlice({
     fiftyTwoWeekLowData: [],
     top_gainers: [],
     top_losers: [],
+    CurrentStockData: [],
     error: false,
     isLoading: true,
   },
@@ -72,6 +73,21 @@ const StockDetailSlice = createSlice({
       state.isLoading = false;
       state.error = true;
     },
+
+    GetCurrentStockStarted: (state, action) => {
+      state.isLoading = true;
+    },
+
+    GetCurrentStockSuccess: (state, action) => {
+      state.isLoading = false;
+      state.CurrentStockData = action.payload;
+      state.error = false;
+    },
+
+    GetCurrentStockFailed: (state, action) => {
+      state.isLoading = false;
+      state.error = true;
+    },
   },
 });
 
@@ -91,6 +107,9 @@ export const {
   GetFiftyTwoWeekLowStart,
   GetFiftyTwoWeekLowSuccess,
   GetFiftyTwoWeeLowFailed,
+  GetCurrentStockStarted,
+  GetCurrentStockSuccess,
+  GetCurrentStockFailed,
 } = StockDetailSlice.actions;
 
 export default StockDetailSlice.reducer;

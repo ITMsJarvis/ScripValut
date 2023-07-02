@@ -13,6 +13,9 @@ import {
   GetTopLosersSuccess,
   GetFiftyTwoWeeLowFailed,
   GetFiftyTwoweekHighFailed,
+  GetCurrentStockStarted,
+  GetCurrentStockSuccess,
+  GetCurrentStockFailed,
 } from "../redux/StockDetailsSlice";
 
 export const GetTopGainers = async (dispatch, link, signal) => {
@@ -60,5 +63,19 @@ export const GetFiftyTwoWeekLow = async (dispatch, link, signal) => {
     dispatch(GetFiftyTwoWeekLowSuccess(result.data));
   } catch (e) {
     dispatch(GetFiftyTwoWeeLowFailed());
+  }
+};
+
+export const GetCurrentStock = async (dispatch, stock_name) => {
+  dispatch(GetCurrentStockStarted());
+
+  try {
+    const result = await axios.get(
+      `https://my-stock-api.onrender.com/stock-details/${stock_name}`
+    );
+
+    dispatch(GetCurrentStockSuccess(result.data));
+  } catch (e) {
+    dispatch(GetCurrentStockFailed());
   }
 };
