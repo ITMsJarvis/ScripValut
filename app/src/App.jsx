@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import AuthorizationPage from "./pages/AuthorizationPage";
 import Home from "./pages/Home";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Stocks from "./components/Stocks";
 import Investment from "./components/Investment";

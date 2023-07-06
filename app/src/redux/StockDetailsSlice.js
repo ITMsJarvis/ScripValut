@@ -76,6 +76,7 @@ const StockDetailSlice = createSlice({
 
     GetCurrentStockStarted: (state, action) => {
       state.isLoading = true;
+      state.CurrentStockData = [];
     },
 
     GetCurrentStockSuccess: (state, action) => {

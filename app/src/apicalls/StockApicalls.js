@@ -66,12 +66,12 @@ export const GetFiftyTwoWeekLow = async (dispatch, link, signal) => {
   }
 };
 
-export const GetCurrentStock = async (dispatch, stock_name) => {
+export const GetCurrentStock = async (dispatch, stock_name, signal) => {
   dispatch(GetCurrentStockStarted());
 
   try {
     const result = await axios.get(
-      `https://my-stock-api.onrender.com/stock-details/${stock_name}`
+      `https://my-stock-api.onrender.com/stock-details-all/${stock_name}`
     );
 
     dispatch(GetCurrentStockSuccess(result.data));
@@ -79,3 +79,6 @@ export const GetCurrentStock = async (dispatch, stock_name) => {
     dispatch(GetCurrentStockFailed());
   }
 };
+
+//Colgate-Palmolive (India)
+//colgatepalmolive-india-ltd-share-price

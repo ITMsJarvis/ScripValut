@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 import styled from "styled-components";
 
@@ -39,8 +40,11 @@ const AddStockButton = styled(FontAwesomeIcon)`
   display: ${(props) => (props.show === true ? "block" : "none")};
 `;
 
-const StockName = styled.h4`
+const StockName = styled(Link)`
   width: fit-content;
+  font-weight: 600;
+  text-decoration: none;
+  color: black;
 `;
 
 const Bottom = styled.div`
@@ -66,6 +70,8 @@ const PriceChange = styled.p`
 const StockViewBox = ({ ...props }) => {
   const [ShowAddbutton, setShowAddbutton] = useState(false);
 
+  const shortname = props.short_name.split("-")[0];
+
   const HandleHover = () => {
     setShowAddbutton(true);
   };
@@ -90,7 +96,7 @@ const StockViewBox = ({ ...props }) => {
           <AddStockButton show={ShowAddbutton} icon={faPlusCircle} />
         </div>
 
-        <StockName>
+        <StockName to={`/stock/${props.company_name.replace(/[-()]/g, "")}`}>
           {props.company_name?.length > 20
             ? `${props.company_name.slice(0, 10)}...`
             : props.company_name}
@@ -98,8 +104,8 @@ const StockViewBox = ({ ...props }) => {
       </Top>
 
       <Bottom>
-        <Price>₹ {props.market_price}</Price>
-        {props.type !== "week" && (
+        <Price> {props.market_price}</Price>
+        {/* {props.type !== "week" && (
           <PriceChange
             style={{
               color:
@@ -114,7 +120,7 @@ const StockViewBox = ({ ...props }) => {
           >
             {props.per_chg}
           </PriceChange>
-        )}
+        )} */}
       </Bottom>
     </Container>
   );

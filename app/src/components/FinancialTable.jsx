@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   display: flex;
@@ -41,36 +42,24 @@ const Value = styled.p`
 `;
 
 const FinancialTable = () => {
+  const { isLoading, error, CurrentStockData } = useSelector(
+    (state) => state.stocks
+  );
+
   return (
     <Container>
       <Header>
         <h4>Indian Oil Corp Ltd Key Indicators</h4>
       </Header>
       <div style={{ padding: "0.5em" }}>
-        <Row>
-          <Index>PE Ratio</Index>
-          <Value>0.98</Value>
-        </Row>
-        <Row>
-          <Index>PE Ratio</Index>
-          <Value>0.98</Value>
-        </Row>
-        <Row>
-          <Index>PE Ratio</Index>
-          <Value>0.98</Value>
-        </Row>
-        <Row>
-          <Index>PE Ratio</Index>
-          <Value>0.98</Value>
-        </Row>
-        <Row>
-          <Index>PE Ratio</Index>
-          <Value>0.98</Value>
-        </Row>
-        <Row>
-          <Index>PE Ratio</Index>
-          <Value>0.98</Value>
-        </Row>
+        {CurrentStockData[0]?.stock_key_indices.map((point, i) =>
+          Object.entries(point).map((p, i) => (
+            <Row>
+              <Index>{p[0]}</Index>
+              <Value>{p[1]}</Value>
+            </Row>
+          ))
+        )}
       </div>
     </Container>
   );

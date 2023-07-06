@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   display: flex;
@@ -78,6 +79,10 @@ const Valuation = styled.div`
 `;
 
 const ToggleTableFinace = () => {
+  const { isLoading, error, CurrentStockData } = useSelector(
+    (state) => state.stocks
+  );
+
   const [show, SetShow] = useState("profit");
 
   const handleToggle = (type) => {
@@ -114,63 +119,39 @@ const ToggleTableFinace = () => {
       </Header>
       {show === "profit" && (
         <Profitablity>
-          <Row>
-            <Index>Profit Margin</Index>
-            <Value>2.3%</Value>
-          </Row>
-          <Row>
-            <Index>Profit Margin</Index>
-            <Value>2.3%</Value>
-          </Row>
-          <Row>
-            <Index>Profit Margin</Index>
-            <Value>2.3%</Value>
-          </Row>
-          <Row>
-            <Index>Profit Margin</Index>
-            <Value>2.3%</Value>
-          </Row>
+          {CurrentStockData[0]?.stock_profitablity_ratio.map((point, i) =>
+            Object.entries(point).map((p, i) => (
+              <Row>
+                <Index>{p[0]}</Index>
+                <Value>{p[1]}</Value>
+              </Row>
+            ))
+          )}
         </Profitablity>
       )}
 
       {show === "operation" && (
         <Operational>
-          <Row>
-            <Index>Profit Margin-ope</Index>
-            <Value>2.3%</Value>
-          </Row>
-          <Row>
-            <Index>Profit Margin</Index>
-            <Value>2.3%</Value>
-          </Row>
-          <Row>
-            <Index>Profit Margin</Index>
-            <Value>2.3%</Value>
-          </Row>
-          <Row>
-            <Index>Profit Margin</Index>
-            <Value>2.3%</Value>
-          </Row>
+          {CurrentStockData[0]?.stock_operation_ratio.map((point, i) =>
+            Object.entries(point).map((p, i) => (
+              <Row>
+                <Index>{p[0]}</Index>
+                <Value>{p[1]}</Value>
+              </Row>
+            ))
+          )}
         </Operational>
       )}
       {show === "valuation" && (
         <Valuation>
-          <Row>
-            <Index>Profit Margin-val</Index>
-            <Value>2.3%</Value>
-          </Row>
-          <Row>
-            <Index>Profit Margin</Index>
-            <Value>2.3%</Value>
-          </Row>
-          <Row>
-            <Index>Profit Margin</Index>
-            <Value>2.3%</Value>
-          </Row>
-          <Row>
-            <Index>Profit Margin</Index>
-            <Value>2.3%</Value>
-          </Row>
+          {CurrentStockData[0]?.stock_valuation_ratio.map((point, i) =>
+            Object.entries(point).map((p, i) => (
+              <Row>
+                <Index>{p[0]}</Index>
+                <Value>{p[1]}</Value>
+              </Row>
+            ))
+          )}
         </Valuation>
       )}
     </Container>

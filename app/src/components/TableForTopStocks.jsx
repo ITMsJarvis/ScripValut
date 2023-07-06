@@ -78,21 +78,21 @@ const TableForTopStocks = (props) => {
         <ColumnHeader>
           Price <small> ₹</small>
         </ColumnHeader>
-        <ColumnHeader>
+        {/* <ColumnHeader>
           {props.category === "52 Week High"
             ? "Day High"
             : props.category === "52 Week Low"
             ? "Day Low"
             : props.category === "Top Gainers"
             ? "Per Change"
-            : "Per Change"}
-        </ColumnHeader>
+            : ""}
+        </ColumnHeader> */}
       </TableHeader>
       {props.table?.map((row, i) => (
         <TableRow key={i}>
           <RowDescription>{row.company_name}</RowDescription>
           <Column>{row.market_price}</Column>
-          <Column>{row.per_chg}</Column>
+          {/* <Column>{row.per_chg}</Column> */}
         </TableRow>
       ))}
     </Container>

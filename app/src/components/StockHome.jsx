@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import IndexWrapper from "./IndexWrapper";
 import CompanyBox from "./CompanyBox";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   display: flex;
@@ -12,6 +13,9 @@ const Container = styled.div`
 `;
 
 const StockHome = () => {
+  const { fiftyTwoWeekHighData, fiftyTwoWeekLowData, top_losers, top_gainers } =
+    useSelector((state) => state.stocks);
+
   return (
     <Container>
       <IndexWrapper />
@@ -19,25 +23,28 @@ const StockHome = () => {
       <CompanyBox
         info={{
           type: "Top Gainers",
-          link: "https://my-stock-api.onrender.com/topstocks/top-gainers?limit=200",
+          link: "https://my-stock-api.onrender.com/all-top-stocks/top-gainers",
         }}
       />
+
       <CompanyBox
         info={{
           type: "Top Losers",
-          link: "https://my-stock-api.onrender.com/topstocks/top-losers?limit=200",
+          link: "https://my-stock-api.onrender.com/all-top-stocks/top-losers",
         }}
       />
+
       <CompanyBox
         info={{
           type: "52 Week High",
-          link: "https://my-stock-api.onrender.com/topstocks/52-week-high?limit=200",
+          link: "https://my-stock-api.onrender.com/all-top-stocks/52-week-high",
         }}
       />
+
       <CompanyBox
         info={{
           type: "52 Week Low",
-          link: "https://my-stock-api.onrender.com/topstocks/52-week-low?limit=200",
+          link: "https://my-stock-api.onrender.com/all-top-stocks/52-week-low",
         }}
       />
     </Container>

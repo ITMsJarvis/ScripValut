@@ -2,7 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import FinancialTable from "./FinancialTable";
 import ToggleTableFinace from "./ToggleTableFinace";
-import ShareHolding from "./ShareHolding";
+import ShareHolding from "./StockPageComponents/ShareHolding";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   display: flex;
@@ -62,34 +63,27 @@ const KeyIndicators = styled.div`
 `;
 
 const StockDescriptionBox = () => {
+  const { isLoading, error, CurrentStockData } = useSelector(
+    (state) => state.stocks
+  );
+
   return (
     <Container>
       <Top>
-        <h4>Indian Oil Corp Ltd Quick Overview</h4>
-        <p>
-          ndian Oil Corporation Limited is an India-based oil company. The
-          Company's segments include Petroleum Products, Petrochemicals and
-          Other Business Activities. Its Other Business Activities segment
-          includes gas, oil and gas exploration activities, explosives and
-          cryogenic business, and wind mill and solar power generation. Its
-          business interests span the entire hydrocarbon value-chain ranging
-          from refining, pipeline transportation and marketing, to exploration
-          and production of crude oil and gas, petrochemicals, gas marketing,
-          alternative energy sources and globalization of downstream operations.
-          It has a network of fuel stations, bulk storage terminals, inland
-          depots, aviation fuel stations, liquefied petroleum gas (LPG) bottling
-          plants and lube blending plants. It also has set up approximately 257
-          electric vehicle (EV) charging stations and 29 battery swapping
-          stations at its energy pumps across the country. It owns and operates
-          approximately nine refineries across India.
-        </p>
+        <h4>{CurrentStockData[0]?.stock_name} Quick Overview</h4>
+        <p>{CurrentStockData[0]?.stock_profile}</p>
       </Top>
       <Bottom>
-        <Box>
-          <Index>Market Cap</Index>
-          <Value>128,926.90 Crore</Value>
-        </Box>
-        <Box>
+        {CurrentStockData[0]?.stock_summary.map((point, i) =>
+          Object.entries(point).map((p, i) => (
+            <Box key={i}>
+              <Index>{p[0]}</Index>
+              <Value>{p[1]}</Value>
+            </Box>
+          ))
+        )}
+
+        {/* <Box>
           <Index>Open</Index>
           <Value>₹ 90.95</Value>
         </Box>
@@ -104,7 +98,7 @@ const StockDescriptionBox = () => {
         <Box>
           <Index>Market Cap</Index>
           <Value>128,926.90 Crore</Value>
-        </Box>
+        </Box> */}
       </Bottom>
     </Container>
   );

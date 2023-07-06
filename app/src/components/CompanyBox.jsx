@@ -63,8 +63,14 @@ const CompanyBox = (props) => {
 
   const dispatch = useDispatch();
 
-  const { fiftyTwoWeekHighData, fiftyTwoWeekLowData, top_gainers, top_losers } =
-    useSelector((state) => state.stocks);
+  const {
+    fiftyTwoWeekHighData,
+    fiftyTwoWeekLowData,
+    top_gainers,
+    top_losers,
+    isLoading,
+    error,
+  } = useSelector((state) => state.stocks);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -126,9 +132,13 @@ const CompanyBox = (props) => {
             ))}
           </Slider>
           {top_gainers.length === 0 &&
+            isLoading &&
             Array.from({ length: 5 }).map((b, i) => (
               <Skeleton height={200} width={180} />
             ))}
+          {!error && !isLoading && top_gainers.length === 0 && (
+            <p>No stocks top gainer today</p>
+          )}
         </Bottom>
       )}
       {props.info.type === "Top Losers" && (
@@ -139,9 +149,13 @@ const CompanyBox = (props) => {
             ))}
           </Slider>
           {top_losers.length === 0 &&
+            isLoading &&
             Array.from({ length: 5 }).map((b, i) => (
               <Skeleton height={200} width={180} />
             ))}
+          {!error && !isLoading && top_losers.length === 0 && (
+            <p>No stocks top loser today</p>
+          )}
         </Bottom>
       )}
       {props.info.type === "52 Week High" && (
@@ -152,9 +166,13 @@ const CompanyBox = (props) => {
             ))}
           </Slider>
           {fiftyTwoWeekHighData.length === 0 &&
+            isLoading &&
             Array.from({ length: 5 }).map((b, i) => (
               <Skeleton height={200} width={180} />
             ))}
+          {!error && !isLoading && fiftyTwoWeekHighData.length === 0 && (
+            <p>No stocks touch 52 week high today</p>
+          )}
         </Bottom>
       )}
       {props.info.type === "52 Week Low" && (
@@ -165,9 +183,14 @@ const CompanyBox = (props) => {
             ))}
           </Slider>
           {fiftyTwoWeekLowData.length === 0 &&
+            isLoading &&
             Array.from({ length: 5 }).map((b, i) => (
               <Skeleton height={200} width={180} />
             ))}
+
+          {!error && !isLoading && fiftyTwoWeekLowData.length === 0 && (
+            <p>No stocks touch 52 week low today</p>
+          )}
         </Bottom>
       )}
     </Container>
