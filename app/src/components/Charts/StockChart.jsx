@@ -8,11 +8,13 @@ import React, {
 import styled from "styled-components";
 import OneDayChart from "./OneDayChart";
 import { io } from "socket.io-client";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import YearChart from "./YearChart";
+import { SetLivePrice } from "../../redux/StockDetailsSlice";
 
-const socket = io("https://scoket-api-backend.onrender.com");
+// const socket = io("https://scoket-api-backend.onrender.com");
+const socket = io("http://localhost:4000");
 
 const Container = styled.div`
   display: flex;
@@ -49,6 +51,8 @@ const Button = styled.div`
 const StockChart = () => {
   const [activeTab, setActiveTab] = useState("1day");
 
+  const [activeSymbol, setActiveSymbol] = useState("");
+
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [oneDayChart, setOneDayChart] = useState([]);
   const [oneWeekChart, setOneWeekChart] = useState([]);
@@ -71,18 +75,25 @@ const StockChart = () => {
       ]);
     }
   };
+
   const symbol = CurrentStockData["basic_info"]?.symbol.split(".")[0];
+
   useEffect(() => {
     socket.on("connect", () => {
       setIsConnected(true);
     });
 
-    if (symbol && !isLoading) {
-      socket.emit("join", symbol);
+    setInterval(() => {
       socket.emit("started", symbol);
+    }, 60 * 1000);
+
+    setInterval(() => {
       socket.emit("oneweek", symbol);
+    }, 5 * 60 * 1000);
+
+    setInterval(() => {
       socket.emit("onemonth", symbol);
-    }
+    }, 30 * 60 * 1000);
 
     socket.on("started", (data) => {
       setOneDayChart((prev) => [
@@ -110,10 +121,14 @@ const StockChart = () => {
 
       console.log(data[0]);
     });
+  }, []);
+
+  useEffect(() => {
+    if (symbol && !isLoading) {
+      socket.emit("join", symbol);
+    }
 
     socket.on("join", (data) => {
-      console.log(data);
-
       Fetchdata(data[0], setOneDayChart);
       Fetchdata(data[1], setOneWeekChart);
       Fetchdata(data[2], setOneMonthChart);
@@ -121,14 +136,12 @@ const StockChart = () => {
       Fetchdata(data[4], setThreeYearChart);
       Fetchdata(data[5], setFiveYearChart);
     });
+  }, [symbol]);
 
-    return () => {
-      socket.off("join");
-    };
-  }, []);
   return (
     <Container>
       {isConnected ? "Connected" : "disconnected"}
+      <p>{oneDayChart[oneDayChart.length - 1]?.price}</p>
 
       {activeTab === "1day" && <OneDayChart data={oneDayChart} />}
       {activeTab === "1week" && <OneDayChart data={oneWeekChart} />}

@@ -116,7 +116,7 @@ const Button = styled.div`
 `;
 
 const StockInfo = () => {
-  const { isLoading, error, CurrentStockData } = useSelector(
+  const { isLoading, error, CurrentStockData, livePrice } = useSelector(
     (state) => state.stocks
   );
 
@@ -135,10 +135,18 @@ const StockInfo = () => {
     return null;
   }
 
-  const priceChange = (
-    CurrentStockData["basic_info"]["currentPrice"] -
-    CurrentStockData["basic_info"]["regularMarketPreviousClose"]
-  ).toFixed(2);
+  let priceChange = 0;
+
+  if (!isLoading && livePrice) {
+    priceChange = (
+      livePrice - CurrentStockData["basic_info"]["regularMarketPreviousClose"]
+    ).toFixed(2);
+  } else {
+    priceChange = (
+      CurrentStockData["basic_info"]["currentPrice"] -
+      CurrentStockData["basic_info"]["regularMarketPreviousClose"]
+    ).toFixed(2);
+  }
 
   console.log(CurrentStockData["basic_info"]["longName"]);
   return (
@@ -152,9 +160,14 @@ const StockInfo = () => {
       <PriceSection>
         <IndexName>NSE</IndexName>
         <Price>
-          <h1>₹ {CurrentStockData["basic_info"]["currentPrice"]}</h1>
+          <h1>
+            ₹{" "}
+            {!isLoading
+              ? livePrice
+              : CurrentStockData["basic_info"]["currentPrice"]}
+          </h1>
           <p style={{ color: priceChange > 0 ? "green" : "red" }}>
-            ₹ {priceChange}
+            ₹ {!isLoading && livePrice ? priceChange : 0}
           </p>
         </Price>
         <Analysis>

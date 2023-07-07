@@ -11,6 +11,7 @@ const StockDetailSlice = createSlice({
     CurrentStockData: [],
     error: false,
     isLoading: true,
+    livePrice: 0,
   },
   reducers: {
     GetIndicesStart: (state, action) => {
@@ -89,6 +90,9 @@ const StockDetailSlice = createSlice({
       state.isLoading = false;
       state.error = true;
     },
+    SetLivePrice: (state, action) => {
+      state.livePrice = action.payload;
+    },
   },
 });
 
@@ -111,6 +115,7 @@ export const {
   GetCurrentStockStarted,
   GetCurrentStockSuccess,
   GetCurrentStockFailed,
+  SetLivePrice,
 } = StockDetailSlice.actions;
 
 export default StockDetailSlice.reducer;
