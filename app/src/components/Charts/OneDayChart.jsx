@@ -13,11 +13,20 @@ import {
 
 const Container = styled.div`
   width: 100%;
-  min-height: 400px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
 `;
 
 const OneDayChart = (props) => {
-  console.log(props.data);
+  let Return =
+    (props.data[props.data?.length - 1]?.price - props.data[0]?.price) /
+    props.data[0]?.price;
+
+  console.log(Return * 100);
+
+  const Total = (Return * 100).toFixed(2);
+
   return (
     <Container>
       <ResponsiveContainer>
@@ -38,6 +47,7 @@ const OneDayChart = (props) => {
           />
         </LineChart>
       </ResponsiveContainer>
+      <p style={{ fontWeight: "500" }}>Total Return: {Total}%</p>
     </Container>
   );
 };

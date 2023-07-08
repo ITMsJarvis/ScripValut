@@ -14,13 +14,12 @@ import YearChart from "./YearChart";
 import { SetLivePrice } from "../../redux/StockDetailsSlice";
 
 // const socket = io("https://scoket-api-backend.onrender.com");
-const socket = io("http://localhost:4000");
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   max-width: 100%;
-  min-height: 400px;
+  max-height: 600px;
   border: 1px solid red;
   padding: 1em;
   gap: 2rem;
@@ -48,107 +47,49 @@ const Button = styled.div`
   cursor: pointer;
 `;
 
-const StockChart = () => {
+const StockChart = (props) => {
+  console.log(props.stockList[0].length);
+
   const [activeTab, setActiveTab] = useState("1day");
 
-  const [activeSymbol, setActiveSymbol] = useState("");
-
-  const [isConnected, setIsConnected] = useState(socket.connected);
-  const [oneDayChart, setOneDayChart] = useState([]);
-  const [oneWeekChart, setOneWeekChart] = useState([]);
-  const [oneMonthChart, setOneMonthChart] = useState([]);
-  const [oneYearChart, setOneYearChart] = useState([]);
-  const [ThreeYearChart, setThreeYearChart] = useState([]);
-  const [FiveYearChart, setFiveYearChart] = useState([]);
-
-  const { pathname } = useLocation();
+  const [isConnected, setIsConnected] = useState();
 
   const { isLoading, error, CurrentStockData } = useSelector(
     (state) => state.stocks
   );
 
-  const Fetchdata = (data, setFunction) => {
-    for (let [key, value] of Object.entries(data)) {
-      setFunction((prev) => [
-        ...prev,
-        { time: key, price: parseFloat(value).toFixed(3) },
-      ]);
-    }
-  };
+  // useEffect(() => {
+  //   socket.on("connect", () => {
+  //     setIsConnected(true);
+  //   });
 
-  const symbol = CurrentStockData["basic_info"]?.symbol.split(".")[0];
+  // }, []);
 
-  useEffect(() => {
-    socket.on("connect", () => {
-      setIsConnected(true);
-    });
+  // useEffect(() => {
+  //   if (symbol && !isLoading) {
+  //     socket.emit("join", symbol);
+  //   }
 
-    setInterval(() => {
-      socket.emit("started", symbol);
-    }, 60 * 1000);
-
-    setInterval(() => {
-      socket.emit("oneweek", symbol);
-    }, 5 * 60 * 1000);
-
-    setInterval(() => {
-      socket.emit("onemonth", symbol);
-    }, 30 * 60 * 1000);
-
-    socket.on("started", (data) => {
-      setOneDayChart((prev) => [
-        ...prev,
-        { time: data[0], price: parseFloat(data[1]).toFixed(3) },
-      ]);
-
-      console.log(data[0]);
-    });
-
-    socket.on("oneweek", (data) => {
-      setOneWeekChart((prev) => [
-        ...prev,
-        { time: data[0], price: parseFloat(data[1]).toFixed(3) },
-      ]);
-
-      console.log(data[0]);
-    });
-
-    socket.on("onemonth", (data) => {
-      setOneMonthChart((prev) => [
-        ...prev,
-        { time: data[0], price: parseFloat(data[1]).toFixed(3) },
-      ]);
-
-      console.log(data[0]);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (symbol && !isLoading) {
-      socket.emit("join", symbol);
-    }
-
-    socket.on("join", (data) => {
-      Fetchdata(data[0], setOneDayChart);
-      Fetchdata(data[1], setOneWeekChart);
-      Fetchdata(data[2], setOneMonthChart);
-      Fetchdata(data[3], setOneYearChart);
-      Fetchdata(data[4], setThreeYearChart);
-      Fetchdata(data[5], setFiveYearChart);
-    });
-  }, [symbol]);
+  //   socket.on("join", (data) => {
+  //     Fetchdata(data[0], setOneDayChart);
+  //     Fetchdata(data[1], setOneWeekChart);
+  //     Fetchdata(data[2], setOneMonthChart);
+  //     Fetchdata(data[3], setOneYearChart);
+  //     Fetchdata(data[4], setThreeYearChart);
+  //     Fetchdata(data[5], setFiveYearChart);
+  //   });
+  // }, []);
 
   return (
     <Container>
-      {isConnected ? "Connected" : "disconnected"}
-      <p>{oneDayChart[oneDayChart.length - 1]?.price}</p>
+      {/* <p>{props.stockList[0][props.stockList[0]?.length - 1]?.price}</p> */}
 
-      {activeTab === "1day" && <OneDayChart data={oneDayChart} />}
-      {activeTab === "1week" && <OneDayChart data={oneWeekChart} />}
-      {activeTab === "1month" && <OneDayChart data={oneMonthChart} />}
-      {activeTab === "1year" && <YearChart data={oneYearChart} />}
-      {activeTab === "3year" && <YearChart data={ThreeYearChart} />}
-      {activeTab === "5year" && <YearChart data={FiveYearChart} />}
+      {activeTab === "1day" && <OneDayChart data={props.stockList[0]} />}
+      {activeTab === "1week" && <OneDayChart data={props.stockList[1]} />}
+      {activeTab === "1month" && <OneDayChart data={props.stockList[2]} />}
+      {activeTab === "1year" && <YearChart data={props.stockList[3]} />}
+      {activeTab === "3year" && <YearChart data={props.stockList[4]} />}
+      {activeTab === "5year" && <YearChart data={props.stockList[5]} />}
       <IntervalButton>
         <Button
           style={{ backgroundColor: activeTab === "1day" && "#4ce93b23" }}

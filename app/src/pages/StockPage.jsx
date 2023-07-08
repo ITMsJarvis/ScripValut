@@ -16,6 +16,8 @@ import Fundamentals from "../components/StockPageComponents/Fundamentals";
 import Financials from "../components/StockPageComponents/Financials";
 import AboutStock from "../components/StockPageComponents/AboutStock";
 import ShareHolding from "../components/StockPageComponents/ShareHolding";
+import { io } from "socket.io-client";
+import { SetLivePrice } from "../redux/StockDetailsSlice";
 
 const Container = styled.div`
   display: flex;
@@ -55,9 +57,26 @@ const Loader = styled.iframe`
 `;
 
 const StockPage = () => {
+  const [isConnected, setIsConnected] = useState(false);
+  const [oneDayChart, setOneDayChart] = useState([]);
+  const [oneWeekChart, setOneWeekChart] = useState([]);
+  const [oneMonthChart, setOneMonthChart] = useState([]);
+  const [oneYearChart, setOneYearChart] = useState([]);
+  const [ThreeYearChart, setThreeYearChart] = useState([]);
+  const [FiveYearChart, setFiveYearChart] = useState([]);
+
   const { isLoading, error, CurrentStockData } = useSelector(
     (state) => state.stocks
   );
+
+  const Fetchdata = (data, setFunction) => {
+    for (let [key, value] of Object.entries(data)) {
+      setFunction((prev) => [
+        ...prev,
+        { time: key, price: parseFloat(value).toFixed(3) },
+      ]);
+    }
+  };
 
   const { pathname } = useLocation();
   const stock_name = pathname.split("/")[2];
@@ -79,6 +98,81 @@ const StockPage = () => {
     };
   }, []);
 
+  const symbol = CurrentStockData["basic_info"]?.symbol.split(".")[0];
+
+  useEffect(() => {
+    const socket = io("http://localhost:4000");
+
+    socket.on("connect", () => {
+      setIsConnected(socket.connected);
+    });
+
+    if (symbol && !isLoading) {
+      socket.emit("join", symbol);
+    }
+
+    setInterval(() => {
+      socket.emit("started", symbol);
+    }, 60 * 1000);
+
+    setInterval(() => {
+      socket.emit("oneweek", symbol);
+    }, 5 * 60 * 1000);
+
+    setInterval(() => {
+      socket.emit("onemonth", symbol);
+    }, 30 * 60 * 1000);
+
+    socket.on("started", (data) => {
+      setOneDayChart((prev) => [
+        ...prev,
+        { time: data[0], price: parseFloat(data[1]).toFixed(3) },
+      ]);
+
+      console.log(data[0]);
+    });
+
+    socket.on("oneweek", (data) => {
+      setOneWeekChart((prev) => [
+        ...prev,
+        { time: data[0], price: parseFloat(data[1]).toFixed(3) },
+      ]);
+
+      console.log(data[0]);
+    });
+
+    socket.on("onemonth", (data) => {
+      setOneMonthChart((prev) => [
+        ...prev,
+        { time: data[0], price: parseFloat(data[1]).toFixed(3) },
+      ]);
+
+      console.log(data[0]);
+    });
+
+    socket.on("join", (data) => {
+      console.log(data);
+      Fetchdata(data[0], setOneDayChart);
+      Fetchdata(data[1], setOneWeekChart);
+      Fetchdata(data[2], setOneMonthChart);
+      Fetchdata(data[3], setOneYearChart);
+      Fetchdata(data[4], setThreeYearChart);
+      Fetchdata(data[5], setFiveYearChart);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [symbol]);
+
+  useEffect(() => {
+    if (oneDayChart.length > 0) {
+      dispatch(SetLivePrice(oneDayChart[oneDayChart.length - 1].price));
+    } else {
+      dispatch(SetLivePrice(0));
+    }
+  }, [oneDayChart]);
+
   if (CurrentStockData.length === 0) {
     return <h1>Loading....</h1>;
   } else {
@@ -88,7 +182,17 @@ const StockPage = () => {
           <StockInfo />
         </Left>
         <Right>
-          <StockChart />
+          <p>{isConnected ? "Connected" : "disconnect"}</p>
+          <StockChart
+            stockList={[
+              oneDayChart,
+              oneWeekChart,
+              oneMonthChart,
+              oneYearChart,
+              ThreeYearChart,
+              FiveYearChart,
+            ]}
+          />
           <Performance />
           <Fundamentals />
           <Financials />

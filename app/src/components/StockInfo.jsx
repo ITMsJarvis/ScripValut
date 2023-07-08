@@ -115,6 +115,32 @@ const Button = styled.div`
   cursor: pointer;
 `;
 
+const Counter = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2em;
+`;
+
+const Quantity = styled.p`
+  width: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const CountButton = styled.div`
+  padding: 0.5em;
+  background-color: #4be93b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6em;
+  border-radius: 50%;
+  width: 1em;
+  height: 1em;
+`;
+
 const StockInfo = () => {
   const { isLoading, error, CurrentStockData, livePrice } = useSelector(
     (state) => state.stocks
@@ -181,6 +207,11 @@ const StockInfo = () => {
             {CurrentStockData["basic_info"]["recommendationKey"]}
           </div>
         </Analysis>
+        <Counter>
+          <CountButton>+</CountButton>
+          <Quantity>1</Quantity>
+          <CountButton>-</CountButton>
+        </Counter>
         <Buttons>
           <Button type="buy">BUY</Button>
           <Button type="sell">SELL</Button>
