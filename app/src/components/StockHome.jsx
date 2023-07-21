@@ -23,28 +23,28 @@ const StockHome = () => {
       <CompanyBox
         info={{
           type: "Top Gainers",
-          link: "https://my-stock-api.onrender.com/all-top-stocks/top-gainers",
+          link: `${import.meta.env.VITE_STOCK_API}/all-top-stocks/top-gainers`,
         }}
       />
 
       <CompanyBox
         info={{
           type: "Top Losers",
-          link: "https://my-stock-api.onrender.com/all-top-stocks/top-losers",
+          link: `${import.meta.env.VITE_STOCK_API}/all-top-stocks/top-losers`,
         }}
       />
 
       <CompanyBox
         info={{
           type: "52 Week High",
-          link: "https://my-stock-api.onrender.com/all-top-stocks/52-week-high",
+          link: `${import.meta.env.VITE_STOCK_API}/all-top-stocks/52-week-high`,
         }}
       />
 
       <CompanyBox
         info={{
           type: "52 Week Low",
-          link: "https://my-stock-api.onrender.com/all-top-stocks/52-week-low",
+          link: `${import.meta.env.VITE_STOCK_API}/all-top-stocks/52-week-low`,
         }}
       />
     </Container>

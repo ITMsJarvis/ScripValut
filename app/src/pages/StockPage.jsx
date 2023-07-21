@@ -101,8 +101,11 @@ const StockPage = () => {
   const symbol = CurrentStockData["basic_info"]?.symbol.split(".")[0];
 
   useEffect(() => {
-    const socket = io("http://localhost:4000");
-
+    // const socket = io(
+    //   "https://realtimestockchartapi-production.up.railway.app/"
+    // );
+    const socket = io("https://socket-api-backend.onrender.com");
+    // const socket = io("http://localhost:4000");
     socket.on("connect", () => {
       setIsConnected(socket.connected);
     });
@@ -111,19 +114,20 @@ const StockPage = () => {
       socket.emit("join", symbol);
     }
 
-    setInterval(() => {
+    let x = setInterval(() => {
       socket.emit("started", symbol);
     }, 60 * 1000);
 
-    setInterval(() => {
+    let y = setInterval(() => {
       socket.emit("oneweek", symbol);
     }, 5 * 60 * 1000);
 
-    setInterval(() => {
+    let z = setInterval(() => {
       socket.emit("onemonth", symbol);
     }, 30 * 60 * 1000);
 
     socket.on("started", (data) => {
+      console.log(data);
       setOneDayChart((prev) => [
         ...prev,
         { time: data[0], price: parseFloat(data[1]).toFixed(3) },

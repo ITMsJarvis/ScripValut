@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import axios from "axios";
+import { publicRequest } from "../apiRequest";
+import toast, { Toaster } from "react-hot-toast";
 
 const Container = styled.div`
   width: 100%;
@@ -120,31 +123,42 @@ const Counter = styled.div`
   align-items: center;
   justify-content: center;
   margin-top: 2em;
+  gap: 2em;
+
+  label {
+    font-weight: 600;
+  }
 `;
 
-const Quantity = styled.p`
-  width: 3rem;
+const CounterLeft = styled.div`
+  display: flex;
+  align-items: start;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 0.5em;
+`;
+
+const Quantity = styled.input`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
-
-const CountButton = styled.div`
+  height: 2.5em;
   padding: 0.5em;
-  background-color: #4be93b;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.6em;
-  border-radius: 50%;
-  width: 1em;
-  height: 1em;
+  border: 1px solid #ccc;
+  border-radius: 0.5em;
+  max-width: 8em;
+  font-size: 1em;
+  text-align: center;
 `;
 
 const StockInfo = () => {
+  const [stockquantity, setStockQuantity] = useState(0);
+
   const { isLoading, error, CurrentStockData, livePrice } = useSelector(
     (state) => state.stocks
   );
+
+  const { userid } = useSelector((state) => state.users);
 
   if (isLoading) {
     // Render loading state or placeholder
@@ -174,9 +188,80 @@ const StockInfo = () => {
     ).toFixed(2);
   }
 
-  console.log(CurrentStockData["basic_info"]["longName"]);
+  const HandleBuyStock = async () => {
+    const Warn = () => toast.error("Please enter quantity more than 0");
+
+    if (stockquantity === 0) {
+      Warn();
+      return;
+    } else {
+      try {
+        const data = {
+          userid: userid,
+          symbol: CurrentStockData["basic_info"]["symbol"].split(".")[0],
+          stockname: CurrentStockData["basic_info"]["longName"],
+          investedPrice: livePrice,
+          quantity: stockquantity,
+          status: "Active",
+          industry: CurrentStockData["basic_info"]["industry"],
+          sector: CurrentStockData["basic_info"]["sector"],
+        };
+
+        const res = await axios.post(
+          `${import.meta.env.VITE_BASE_URL}/stocks/buystock`,
+          data
+        );
+
+        const success = () => toast.success(res.data);
+
+        success();
+      } catch (e) {
+        const failure = () => toast.error("Something went wrong");
+
+        failure();
+      }
+    }
+  };
+
+  const HandleSellStock = async () => {
+    const Warn = () => toast.error("Please enter quantity more than 0");
+
+    if (stockquantity === 0) {
+      Warn();
+      return;
+    } else {
+      try {
+        const data = {
+          userid: userid,
+          symbol: CurrentStockData["basic_info"]["symbol"].split(".")[0],
+          stockname: CurrentStockData["basic_info"]["longName"],
+          marketPrice: livePrice,
+          quantity: stockquantity,
+          status: "Sold",
+          industry: CurrentStockData["basic_info"]["industry"],
+          sector: CurrentStockData["basic_info"]["sector"],
+        };
+
+        const res = await axios.post(
+          `${import.meta.env.VITE_BASE_URL}/stocks/sellstock`,
+          data
+        );
+
+        const success = () => toast.success(res.data);
+
+        success();
+      } catch (e) {
+        console.log(e);
+        const failure = () => toast.error(e.response.data);
+
+        failure();
+      }
+    }
+  };
+
   return (
     <Container>
+      <Toaster position="top-center" reverseOrder={false} duration={10000} />
       <Top>
         {/* <Logo src={CurrentStockData["basic_info"]["logoName"]} /> */}
         <Title>
@@ -208,13 +293,34 @@ const StockInfo = () => {
           </div>
         </Analysis>
         <Counter>
-          <CountButton>+</CountButton>
-          <Quantity>1</Quantity>
-          <CountButton>-</CountButton>
+          <CounterLeft>
+            <label>Quantity</label>
+            <Quantity
+              type="number"
+              min="0"
+              value={stockquantity}
+              onChange={(e) => setStockQuantity(e.target.value)}
+            />
+          </CounterLeft>
+          <CounterLeft>
+            <label>Price</label>
+            <Quantity
+              type="text"
+              value={
+                !isLoading
+                  ? livePrice
+                  : CurrentStockData["basic_info"]["currentPrice"]
+              }
+            />
+          </CounterLeft>
         </Counter>
         <Buttons>
-          <Button type="buy">BUY</Button>
-          <Button type="sell">SELL</Button>
+          <Button onClick={() => HandleBuyStock()} type="buy">
+            BUY
+          </Button>
+          <Button onClick={() => HandleSellStock()} type="sell">
+            SELL
+          </Button>
         </Buttons>
       </PriceSection>
     </Container>

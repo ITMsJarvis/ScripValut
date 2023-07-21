@@ -2,125 +2,205 @@ import puppeteer from "puppeteer";
 // import StockList from "../data/stocks.json" assert { type: "json" };
 import mongoose from "mongoose";
 import axios from "axios";
-//Get Indices
+import Stock from "../models/StockModel.js";
+import User from "../models/UserModel.js";
 
-export const GetIndices = async (req, res) => {
-  try {
-    const response = await axios.get(
-      "https://my-stock-api.onrender.com/allindices"
-    );
+export const AddtoWatchList = async (req, res) => {
+  const { userid, stockname, status } = req.body;
 
-    res.status(200).send(response.data);
-  } catch (error) {
-    res.status(500).send("Sonething went wrong");
+  const isPresent = await Stock.findOne({
+    userid: userid,
+    stockname: stockname,
+    status: status,
+  });
+
+  if (isPresent) {
+    return res.status(401).send("Already added in watchlist");
   }
-};
-
-//All Top gainers, losers,by volumes, 52W high, 52W low
-
-export const AllTopstocksAllCap = async (req, res) => {
-  const category = req.query.category;
-
-  //category list = top-gainers,top-losers,top-volume,52-week-high,52-week-low
-
-  const index = req.query.index;
-
-  //index list = GIDXNIFTY100-large,GIDXNIFTY500,GIDXNIFMDCP100-mid,GIDXNIFSMCP100-small
 
   try {
-    const response = await axios.get(
-      `https://my-stock-api.onrender.com/topstocks/${category}/${index}`
-    );
-    res.status(200).send(response.data);
+    const NewStock = new Stock({
+      userid: userid,
+      stockname: stockname,
+      status: status,
+    });
+
+    await NewStock.save();
+
+    res.status(200).send("stock added to watchlist");
   } catch (e) {
-    res.status(500).send("Something went wrong");
+    res.status(500).send("Something went wrong...");
   }
 };
 
-export const AllSectorData = async (req, res) => {
-  const sector = req.query.sector;
+export const BuyStock = async (req, res) => {
+  const {
+    userid,
+    symbol,
+    stockname,
+    status,
+    investedPrice,
+    marketPrice,
+    quantity,
+    sector,
+    industry,
+  } = req.body;
 
   try {
-    const response = await axios.get(
-      `https://stock-new-api.onrender.com/sector-wise-data?sector=${sector}`
-    );
-    res.status(200).send(response.data);
-  } catch (e) {
-    res.status(500).send("Something went wrong");
-  }
-};
+    const NewPruchaseStock = new Stock({
+      userid,
+      symbol,
+      stockname,
+      status,
+      investedPrice,
+      quantity,
+      sector,
+      industry,
+    });
 
-//Add complete list of stocks from json file
-// export const AddStocks = async (req, res) => {
-//   const arrayOfObjects = StockList.data;
+    await NewPruchaseStock.save();
 
-//   try {
-//     const collection = mongoose.connection.collection("stocksdetails");
-//     collection.insertMany(arrayOfObjects, (err, result) => {
-//       if (err) {
-//         console.error(err);
-//         res.status(500).send(err);
-//       } else {
-//         console.log("Objects inserted successfully!");
-//         console.log(result);
-//         res.status(200).send("Success");
-//       }
-//     });
-//   } catch (e) {
-//     console.error(e);
-//     res.status(500).send(e);
-//   }
-// };
+    const user = await User.findById(userid);
 
-export const GetStockDetails = async (req, res) => {
-  const stockName = req.query.stock_name;
-  console.log(stockName);
-
-  try {
-    const stock = await mongoose.connection
-      .collection("stocksdetails")
-      .find({ name: { $eq: stockName } })
-      .toArray();
-
-    const stock_symbol = stock[0]?.symbol;
-
-    console.log(stock_symbol);
-
-    console.log(
-      `https://telescope-stocks-options-price-charts.p.rapidapi.com/stocks/${stock_symbol}.NS`
-    );
-
-    if (stock_symbol) {
-      const options = {
-        method: "GET",
-        url: `https://telescope-stocks-options-price-charts.p.rapidapi.com/stocks/${stock_symbol}.NS`,
-        params: {
-          modules: "assetProfile,summaryProfile,price",
-        },
-        headers: {
-          "X-RapidAPI-Key": `${process.env.RapidAPI_KEY}`,
-          "X-RapidAPI-Host": `${process.env.RapidAPI_HOST}`,
-        },
-      };
-
-      const response = await axios.request(options);
-      res.status(200).send(response.data.quoteSummary.result[0]);
+    if (!user) {
+      return res.status(404).send("User not found");
     }
+
+    const totalInvestment = quantity * investedPrice;
+    if (user.walletbalance < totalInvestment) {
+      return res.status(400).send("Insufficient funds");
+    }
+
+    user.walletbalance -= totalInvestment;
+    await user.save();
+
+    res
+      .status(200)
+      .send(`${quantity} shares of ${stockname} are brought successfully`);
   } catch (e) {
-    res.status(500).send(e);
+    res.status(500).send("Something went wrong");
   }
 };
 
-export const Get52WeekSummary = async (req, res) => {
-  const filter = req.query.filter;
+export const soldStock = async (req, res) => {
+  const {
+    userid,
+    symbol,
+    stockname,
+    status,
+    marketPrice,
+    quantity,
+    sector,
+    industry,
+  } = req.body;
 
   try {
-    const response = await axios.get(
-      `https://my-stock-api.onrender.com/fifty-two-week-data/${filter}`
+    const user = await User.findById(userid);
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    const stocks = await Stock.find(
+      { userid, stockname, status: "Active" },
+      {},
+      { sort: { quantity: -1 } }
     );
 
-    res.status(200).send(response.data);
-  } catch (e) {
-    res.status(500).send("Somethinh went wrong");
+    if (stocks.length === 0) {
+      return res.status(404).send("Stock not found");
+    }
+
+    const totalQuantity = stocks.reduce((total, s) => total + s.quantity, 0);
+
+    if (totalQuantity < quantity) {
+      return res.status(400).send(`You have only ${totalQuantity} quantity`);
+    }
+
+    let remainingQuantity = quantity;
+
+    for (const stock of stocks) {
+      if (stock.quantity > 0 && remainingQuantity > 0) {
+        const soldQuantity = Math.min(remainingQuantity, stock.quantity);
+        stock.quantity -= soldQuantity;
+        remainingQuantity -= soldQuantity;
+
+        if (stock.quantity === 0) {
+          await Stock.findByIdAndDelete(stock._id);
+        } else {
+          await stock.save();
+        }
+      }
+    }
+
+    const addBalance = quantity * marketPrice;
+
+    user.walletbalance += addBalance;
+
+    await user.save();
+
+    const SoldStock = new Stock({
+      userid,
+      symbol,
+      stockname,
+      status,
+      marketPrice,
+      quantity,
+      sector,
+      industry,
+    });
+
+    await SoldStock.save();
+
+    return res
+      .status(200)
+      .send(quantity + " shares of " + stockname + " sold successfully");
+  } catch (error) {
+    console.error("Error selling stock:", error);
+    res.status(500).send("Something went wrong");
+  }
+};
+
+export const GetUserAllStocks = async (req, res) => {
+  const userid = req.body.userid;
+
+  console.log(userid);
+
+  try {
+    const result = await Stock.aggregate([
+      { $match: { userid: userid, status: "Active" } },
+      {
+        $group: {
+          _id: "$symbol",
+          stockname: { $first: "$stockname" },
+          averagePrice: { $avg: "$investedPrice" },
+          totalQuantity: { $sum: "$quantity" },
+        },
+      },
+    ]);
+
+    let MarketPrices = [];
+
+    for (let stock of result) {
+      const response = await axios.get(
+        `https://my-stock-api.onrender.com/one-day-hist/${stock._id}`
+      );
+
+      let lastPair = Object.entries(response.data)[
+        Object.entries(response.data).length - 1
+      ];
+
+      MarketPrices.push(lastPair[1]);
+    }
+
+    console.log(MarketPrices);
+
+    const FinalData = result.map((stock, i) => {
+      return { ...stock, marketPrice: MarketPrices[i] };
+    });
+
+    res.status(200).send(FinalData);
+  } catch (error) {
+    res.status(500).send("Something went wrong");
   }
 };

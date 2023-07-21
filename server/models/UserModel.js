@@ -40,13 +40,9 @@ const UserSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
-    portfolio: {
-      type: [Portfolio.schema],
-      default: [],
-    },
-    watchlist: {
-      type: [WatchList.schema],
-      default: [],
+    walletbalance: {
+      type: Number,
+      default: 100000,
     },
     refreshToken: {
       type: String,

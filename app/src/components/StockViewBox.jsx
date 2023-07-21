@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-
+import toast, { Toaster } from "react-hot-toast";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 const Container = styled.div`
   width: 11.29rem;
@@ -38,6 +40,7 @@ const AddStockButton = styled(FontAwesomeIcon)`
   color: #4be93b;
   font-size: 1.5em;
   display: ${(props) => (props.show === true ? "block" : "none")};
+  cursor: pointer;
 `;
 
 const StockName = styled(Link)`
@@ -70,6 +73,12 @@ const PriceChange = styled.p`
 const StockViewBox = ({ ...props }) => {
   const [ShowAddbutton, setShowAddbutton] = useState(false);
 
+  const { isLoading, error, CurrentStockData, livePrice } = useSelector(
+    (state) => state.stocks
+  );
+
+  const { userid } = useSelector((state) => state.users);
+
   const shortname = props.short_name.split("-")[0];
 
   const HandleHover = () => {
@@ -80,20 +89,46 @@ const StockViewBox = ({ ...props }) => {
     setShowAddbutton(false);
   };
 
-  console.log(props);
+  const HandleAddtoWatchList = async () => {
+    const data = {
+      userid: userid,
+      stockname: props.company_name,
+      status: "Watchlist",
+    };
+
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/stocks/addtowatchlist`,
+        data
+      );
+
+      const Success = () => toast.success(res.data);
+
+      Success();
+    } catch (e) {
+      const Error = () => toast.error("Something went wrong");
+
+      Error();
+    }
+  };
 
   return (
     <Container
       onMouseOver={() => HandleHover()}
       onMouseLeave={() => HandleLeave()}
     >
+      <Toaster position="top-center" reverseOrder={false} duration={10000} />
       <Top>
         <div>
           <img
             src="https://assets-netstorage.groww.in/stock-assets/logos/NSE.png"
             alt=""
           />
-          <AddStockButton show={ShowAddbutton} icon={faPlusCircle} />
+          <AddStockButton
+            onClick={() => HandleAddtoWatchList()}
+            show={ShowAddbutton}
+            icon={faPlusCircle}
+          />
         </div>
 
         <StockName to={`/stock/${props.company_name.replace(/[-()]/g, "")}`}>

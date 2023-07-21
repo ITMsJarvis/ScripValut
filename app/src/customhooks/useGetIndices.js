@@ -24,9 +24,11 @@ export const useGetIndices = () => {
     dispatch(GetIndicesStart());
 
     const getData = async () => {
+      console.log(`${import.meta.env.VITE_STOCK_API}`);
+
       try {
-        const res = await publicRequest.get(
-          "https://my-stock-api.onrender.com/allindices",
+        const res = await axios.get(
+          `${import.meta.env.VITE_STOCK_API}/allindices`,
           { signal }
         );
         console.log(res.data);

@@ -3,8 +3,8 @@ import mongoose, { model } from "mongoose";
 const StockSchema = new mongoose.Schema(
   {
     userid: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
+      required: true,
     },
 
     symbol: {

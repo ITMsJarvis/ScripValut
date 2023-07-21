@@ -71,7 +71,7 @@ export const GetCurrentStock = async (dispatch, stock_name, signal) => {
 
   try {
     const result = await axios.get(
-      `https://my-stock-api.onrender.com/stock-details-all/${stock_name}`,
+      `${import.meta.env.VITE_STOCK_API}/stock-details-all/${stock_name}`,
       signal
     );
 
