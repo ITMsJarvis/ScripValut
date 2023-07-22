@@ -110,6 +110,10 @@ const Profile = styled.div`
 const Navbar = () => {
   const { pathname } = useLocation();
 
+  const [searchInput, setSearchInput] = useState("");
+
+  const [StockList, setStockList] = useState([]);
+
   return (
     <Container>
       <Left>

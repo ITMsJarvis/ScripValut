@@ -204,3 +204,54 @@ export const GetUserAllStocks = async (req, res) => {
     res.status(500).send("Something went wrong");
   }
 };
+
+export const GetWatchList = async (req, res) => {
+  const userid = req.body.userid;
+  try {
+    const WatchList = await Stock.find({ userid: userid, status: "Watchlist" });
+
+    res.status(200).send(WatchList);
+  } catch (e) {
+    res.status(500).send("Sonething went wrong...");
+  }
+};
+
+export const GetBalance = async (req, res) => {
+  const userid = req.body.userid;
+
+  try {
+    const WatchList = await User.findOne({ _id: userid });
+
+    res.status(200).send(WatchList);
+  } catch (e) {
+    res.status(500).send("Sonething went wrong...");
+  }
+};
+
+export const SearchStock = async (req, res) => {
+  const searchTerm = req.query.stockname;
+
+  try {
+    const stock = mongoose.connection.collection("stocksdetails");
+
+    const result = await stock
+      .aggregate([
+        {
+          $search: {
+            index: "default1",
+            text: {
+              query: `${searchTerm}`,
+              path: {
+                wildcard: "*",
+              },
+            },
+          },
+        },
+      ])
+      .toArray();
+
+    res.status(200).send(result);
+  } catch (e) {
+    res.status(500).send("Something went wrong");
+  }
+};

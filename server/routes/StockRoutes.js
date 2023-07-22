@@ -2,7 +2,10 @@ import express from "express";
 import {
   AddtoWatchList,
   BuyStock,
+  GetBalance,
   GetUserAllStocks,
+  GetWatchList,
+  SearchStock,
   soldStock,
   // AllSectorData,
   // AllTopstocksAllCap,
@@ -52,5 +55,17 @@ router.post("/sellstock", soldStock);
 //Get all users stocks
 
 router.post("/getAllstocks", GetUserAllStocks);
+
+//Get Wathlist of user
+
+router.post("/getwatchlist", GetWatchList);
+
+//Get WalletBalance of user
+
+router.post("/getBalance", GetBalance);
+
+//Search Stocks
+
+router.get("/searchstocks", SearchStock);
 
 export default router;

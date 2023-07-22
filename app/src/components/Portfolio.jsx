@@ -88,8 +88,6 @@ const Portfolio = () => {
           { userid: userid }
         );
 
-        console.log(`${import.meta.env.VITE_BASE_URL}/stocks/getAllstocks`);
-
         setPortFolioList(res.data);
       } catch (e) {
         console.log(e);
