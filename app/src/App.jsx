@@ -18,6 +18,8 @@ import MutualFund from "./components/MutualFund";
 import IndicesTable from "./components/IndicesTable";
 import TableComponent from "./components/TableComponent";
 import StockPage from "./pages/StockPage";
+import ProfilePage from "./pages/ProfilePage";
+import Introduction from "./pages/Introduction";
 
 const Container = styled.main`
   display: flex;
@@ -55,6 +57,7 @@ function App() {
             path="/"
             element={!username ? <Navigate to="/register" /> : <Home />}
           >
+            <Route path="/" element={<Introduction />} />
             <Route path="/explore" element={<Stocks />}>
               <Route path="/explore/stocks" element={<StockHome />} />
             </Route>
@@ -67,6 +70,7 @@ function App() {
             <Route path="/investment" element={<Investment />} />
 
             <Route path="/stock/:name" element={<StockPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
           </Route>
         </Routes>
       </Router>

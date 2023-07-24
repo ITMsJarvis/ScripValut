@@ -31,10 +31,11 @@ const UserSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      enum: ["male", "female", "others"],
+      default: "",
     },
     dob: {
-      type: Date,
+      type: String,
+      default: "",
     },
     address: {
       type: Array,

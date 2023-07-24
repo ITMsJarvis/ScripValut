@@ -35,19 +35,23 @@ const GenerateRefreshToken = async (req, res) => {
 
 userRequest.interceptors.request.use(
   async (config) => {
-    const currentTime = new Date().getTime();
+    try {
+      const currentTime = new Date().getTime();
 
-    const token = jwtdecode(accessToken);
+      const token = jwtdecode(accessToken);
 
-    if (token.exp * 1000 < currentTime) {
-      const data = await GenerateRefreshToken();
+      if (token.exp * 1000 < currentTime) {
+        const data = await GenerateRefreshToken();
+        console.log(data);
 
-      request.headers["token"] = `Bearer ${data.NewAccessToken}`;
-    } else {
-      request.headers["token"] = `Bearer ${accessToken}`;
+        config.headers["token"] = `Bearer ${data?.NewAccessToken}`;
+      } else {
+        config.headers["token"] = `Bearer ${accessToken}`;
+      }
+      return config;
+    } catch (e) {
+      console.log(e);
     }
-
-    return config();
   },
   (error) => {
     return Promise.reject(error);

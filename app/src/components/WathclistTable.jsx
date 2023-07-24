@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   min-width: 70%;
@@ -44,12 +45,14 @@ const Column = styled.div`
   align-items: center;
 `;
 
-const RowDescription = styled.div`
+const RowDescription = styled(Link)`
   min-width: 30%;
   display: flex;
   align-items: center;
   font-weight: 500;
   gap: 1em;
+  text-decoration: none;
+  color: #000;
 `;
 const Description = styled.div`
   min-width: 30%;
@@ -99,7 +102,11 @@ const WathclistTable = () => {
       {Watchlist?.map((stock, id) => (
         <TableRow key={id}>
           <Column>{id + 1}</Column>
-          <RowDescription>{stock.stockname}</RowDescription>
+          <RowDescription
+            to={`/stock/${stock.stockname.replace(/[-()]/g, "")}`}
+          >
+            {stock.stockname}
+          </RowDescription>
         </TableRow>
       ))}
     </Container>

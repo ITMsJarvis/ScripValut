@@ -12,6 +12,7 @@ import { publicRequest } from "../apiRequest";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   min-width: 70%;
@@ -53,12 +54,14 @@ const Column = styled.div`
   align-items: center;
 `;
 
-const RowDescription = styled.div`
+const RowDescription = styled(Link)`
   min-width: 30%;
   display: flex;
   align-items: center;
   font-weight: 500;
   gap: 1em;
+  text-decoration: none;
+  color: #000;
 `;
 const Description = styled.div`
   min-width: 30%;
@@ -98,10 +101,10 @@ const Portfolio = () => {
       getData();
     }
 
-    // let intervalId = setInterval(getData, 60000);
+    let intervalId = setInterval(getData, 60000);
 
     return () => {
-      // clearInterval(intervalId);
+      clearInterval(intervalId);
     };
   }, [pathname]);
 
@@ -121,7 +124,11 @@ const Portfolio = () => {
 
       {portfolioList?.map((stock, id) => (
         <TableRow key={id}>
-          <RowDescription>{stock.stockname}</RowDescription>
+          <RowDescription
+            to={`/stock/${stock.stockname.replace(/[-()]/g, "")}`}
+          >
+            {stock.stockname}
+          </RowDescription>
           <Column>{stock.totalQuantity}</Column>
           <Column>{stock.marketPrice.toFixed(3)}</Column>
           <Column>{stock.averagePrice}</Column>
@@ -140,8 +147,12 @@ const Portfolio = () => {
             }}
           >
             {(
-              stock.marketPrice * stock.totalQuantity -
-              stock.averagePrice * stock.totalQuantity
+              ((
+                stock.marketPrice * stock.totalQuantity -
+                stock.averagePrice * stock.totalQuantity
+              ).toFixed(2) /
+                (stock.averagePrice * stock.totalQuantity)) *
+              100
             ).toFixed(2)}{" "}
             %
           </Column>

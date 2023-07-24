@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   width: 100%;
@@ -52,13 +53,15 @@ const Column = styled.div`
   align-items: center;
 `;
 
-const RowDescription = styled.div`
+const RowDescription = styled(Link)`
   flex: 2;
   display: flex;
   align-items: center;
   font-weight: 500;
   gap: 1em;
   padding: 1em;
+  text-decoration: none;
+  color: #000;
 `;
 const Description = styled.div`
   flex: 2;
@@ -90,7 +93,11 @@ const TableForTopStocks = (props) => {
       </TableHeader>
       {props.table?.map((row, i) => (
         <TableRow key={i}>
-          <RowDescription>{row.company_name}</RowDescription>
+          <RowDescription
+            to={`/stock/${row.company_name.replace(/[-()]/g, "")}`}
+          >
+            {row.company_name}
+          </RowDescription>
           <Column>{row.market_price}</Column>
           {/* <Column>{row.per_chg}</Column> */}
         </TableRow>

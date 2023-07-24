@@ -247,6 +247,9 @@ export const SearchStock = async (req, res) => {
             },
           },
         },
+        {
+          $limit: 5,
+        },
       ])
       .toArray();
 

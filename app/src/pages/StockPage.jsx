@@ -80,23 +80,24 @@ const StockPage = () => {
 
   const { pathname } = useLocation();
   const stock_name = pathname.split("/")[2];
-  const stock_code = pathname.split("/")[3];
+
+  console.log(stock_name);
 
   const dispatch = useDispatch();
 
   console.log(stock_name);
 
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
+    let isSubscription = true;
 
-    GetCurrentStock(dispatch, stock_name, stock_code, signal);
-    // window.location.reload();
+    if (isSubscription) {
+      GetCurrentStock(dispatch, stock_name);
+    }
 
     return () => {
-      controller.abort();
+      isSubscription = false;
     };
-  }, []);
+  }, [stock_name]);
 
   const symbol = CurrentStockData["basic_info"]?.symbol.split(".")[0];
 
@@ -108,6 +109,13 @@ const StockPage = () => {
     // const socket = io("http://localhost:4000");
     socket.on("connect", () => {
       setIsConnected(socket.connected);
+
+      setOneDayChart([]);
+      setOneWeekChart([]);
+      setOneYearChart([]);
+      setOneMonthChart([]);
+      setThreeYearChart([]);
+      setFiveYearChart([]);
     });
 
     if (symbol && !isLoading) {
