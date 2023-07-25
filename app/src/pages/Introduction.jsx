@@ -1,11 +1,12 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 70%;
-  gap: 8em;
+  gap: 3em;
 `;
 
 const Top = styled.div`
@@ -15,8 +16,9 @@ const Top = styled.div`
   flex-direction: column;
   gap: 3em;
   margin-top: 3em;
+  text-align: center;
   p {
-    font-size: 2em;
+    font-size: clamp(1.1em, 5vw, 2em);
     animation: pop 3s ease-in-out;
 
     @keyframes pop {
@@ -44,7 +46,7 @@ const Top = styled.div`
 `;
 
 const Heading = styled.h1`
-  font-size: 6em;
+  font-size: clamp(7vw, 3em, 50vw);
   text-align: center;
   font-weight: 500;
   animation: show 1s linear;
@@ -83,6 +85,8 @@ const Button = styled.button`
 const Center = styled.div`
   display: flex;
   align-items: center;
+  padding: 2em 0;
+  margin-bottom: 1em;
 
   img {
     width: 40%;
@@ -103,7 +107,7 @@ const Center = styled.div`
 `;
 
 const Title = styled.h3`
-  font-size: 3em;
+  font-size: clamp(1.1em, 5vw, 3em);
   font-weight: 500;
   position: relative;
   animation: arrive 1s linear;
@@ -126,7 +130,10 @@ const Introduction = () => {
       <Top>
         <Heading>Empowering Investors, Unleashing Potential</Heading>
         <p>Your Gateway to India's Stock Market</p>
-        <Button>Get Started</Button>
+        <Link to="/explore/stocks" style={{ textDecoration: "none" }}>
+          <Button>Get Started</Button>
+        </Link>
+
         <img src="../../introbg.svg" alt="" />
       </Top>
       <Center>

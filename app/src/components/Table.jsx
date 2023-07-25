@@ -11,23 +11,24 @@ import {
 import { publicRequest } from "../apiRequest";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { tablet } from "../responsive";
 
 const Container = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: column;
-  border-radius: 1em;
-  overflow: hidden;
-  border: 1px solid #e7e3e3;
+  border: 1px solid #ccc;
+  border-radius: 0.5em;
+  margin-bottom: 2em;
 `;
 
 const TableHeader = styled.div`
+  width: 100%;
   display: flex;
   align-items: center;
   height: 3.5em;
-  background-color: #e7e3e3;
   padding: 0.5em;
-  gap: 3px;
+  gap: 1em;
+  border-bottom: 1px solid #e7e3e3;
 `;
 
 const TableRow = styled.div`
@@ -36,31 +37,32 @@ const TableRow = styled.div`
   height: 3.5em;
   border-bottom: 1px solid #e7e3e3;
   padding: 0.5em;
-  gap: 5px;
+  gap: 1em;
+  width: 100%;
 `;
 
 const ColumnHeader = styled.div`
-  min-width: 11.66%;
+  min-width: 8em;
   display: flex;
   align-items: center;
-
   font-weight: 500;
+  height: 100%;
 `;
 const Column = styled.div`
-  min-width: 11.66%;
+  min-width: 8em;
   display: flex;
   align-items: center;
 `;
 
 const RowDescription = styled.div`
-  min-width: 30%;
+  min-width: 15%;
   display: flex;
   align-items: center;
   font-weight: 500;
   gap: 1em;
 `;
 const Description = styled.div`
-  min-width: 30%;
+  min-width: 15%;
   display: flex;
   align-items: center;
   font-weight: 500;

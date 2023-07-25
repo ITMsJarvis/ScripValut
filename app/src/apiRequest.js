@@ -13,7 +13,7 @@ export const userRequest = axios.create({
   baseURL: `${import.meta.env.VITE_BASE_URL}`,
 });
 
-const GenerateRefreshToken = async (req, res) => {
+const GenerateRefreshToken = async () => {
   try {
     const res = await publicRequest.post("/user_auth/refreshToken", {
       refreshToken,
@@ -40,9 +40,13 @@ userRequest.interceptors.request.use(
 
       const token = jwtdecode(accessToken);
 
+      console.log(token);
+
       if (token.exp * 1000 < currentTime) {
         const data = await GenerateRefreshToken();
         console.log(data);
+        console.log(accessToken);
+        console.log(data?.NewAccessToken);
 
         config.headers["token"] = `Bearer ${data?.NewAccessToken}`;
       } else {

@@ -14,6 +14,7 @@ const Container = styled.div`
   border: 1px solid #e7e3e3;
   max-height: 70vh;
   overflow-y: scroll;
+  margin-bottom: 2em;
 
   &::-webkit-scrollbar-button {
     width: 10px;
@@ -96,7 +97,7 @@ const TableForTopStocks = (props) => {
           <RowDescription
             to={`/stock/${row.company_name.replace(/[-()]/g, "")}`}
           >
-            {row.company_name}
+            {row.company_name.substring(0, 20) + "..."}
           </RowDescription>
           <Column>{row.market_price}</Column>
           {/* <Column>{row.per_chg}</Column> */}

@@ -20,9 +20,11 @@ const Container = styled.div`
   flex-direction: column;
   max-width: 100%;
   max-height: 600px;
-  border: 1px solid red;
+  /* border: 1px solid red; */
   padding: 1em;
   gap: 2rem;
+  box-shadow: 0px 0px 1px 2px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5em;
 `;
 
 const IntervalButton = styled.div`

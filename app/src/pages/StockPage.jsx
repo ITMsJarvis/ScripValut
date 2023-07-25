@@ -23,10 +23,11 @@ const Container = styled.div`
   display: flex;
   width: 70%;
   padding: 0 1em;
-  border: 1px solid red;
+  /* border: 1px solid red; */
   position: relative;
   gap: 1em;
   margin-top: 2em;
+  margin-bottom: 2em;
 `;
 
 const Left = styled.div`

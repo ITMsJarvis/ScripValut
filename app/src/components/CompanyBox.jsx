@@ -11,6 +11,7 @@ import {
 import { Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { mobile, tablet } from "../responsive";
 
 const Container = styled.div`
   width: 100%;
@@ -29,6 +30,7 @@ const Top = styled.div`
   flex-direction: start;
   width: 100%;
   gap: 1em;
+  ${mobile({ flexDirection: "column" })}
 `;
 
 const Title = styled.h2`
@@ -38,17 +40,8 @@ const Title = styled.h2`
 const Bottom = styled.div`
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  width: 100%;
-  overflow-x: scroll;
-  scroll-behavior: smooth;
-  padding: 1em;
-  position: relative;
-
-  ::-webkit-scrollbar {
-    display: none;
-  }
+  justify-content: center;
+  padding: 0.5em;
 `;
 
 const Slider = styled.div`
@@ -56,6 +49,7 @@ const Slider = styled.div`
   flex-wrap: wrap;
   gap: 1em;
   transition: all 0.3s linear;
+  ${tablet({ justifyContent: "center" })}
 `;
 
 const CompanyBox = (props) => {
@@ -131,11 +125,14 @@ const CompanyBox = (props) => {
               <StockViewBox key={i} {...box} />
             ))}
           </Slider>
-          {top_gainers.length === 0 &&
-            isLoading &&
-            Array.from({ length: 5 }).map((b, i) => (
-              <Skeleton height={200} width={180} />
-            ))}
+          <Slider>
+            {top_gainers.length === 0 &&
+              isLoading &&
+              Array.from({ length: 5 }).map((b, i) => (
+                <Skeleton height={200} width={180} />
+              ))}
+          </Slider>
+
           {!error && !isLoading && top_gainers.length === 0 && (
             <p>No stocks top gainer today</p>
           )}
@@ -148,11 +145,14 @@ const CompanyBox = (props) => {
               <StockViewBox key={i} {...box} />
             ))}
           </Slider>
-          {top_losers.length === 0 &&
-            isLoading &&
-            Array.from({ length: 5 }).map((b, i) => (
-              <Skeleton height={200} width={180} />
-            ))}
+          <Slider>
+            {top_losers.length === 0 &&
+              isLoading &&
+              Array.from({ length: 5 }).map((b, i) => (
+                <Skeleton height={200} width={180} />
+              ))}
+          </Slider>
+
           {!error && !isLoading && top_losers.length === 0 && (
             <p>No stocks top loser today</p>
           )}
@@ -165,11 +165,14 @@ const CompanyBox = (props) => {
               <StockViewBox key={i} {...box} type="week" />
             ))}
           </Slider>
-          {fiftyTwoWeekHighData.length === 0 &&
-            isLoading &&
-            Array.from({ length: 5 }).map((b, i) => (
-              <Skeleton height={200} width={180} />
-            ))}
+          <Slider>
+            {fiftyTwoWeekHighData.length === 0 &&
+              isLoading &&
+              Array.from({ length: 5 }).map((b, i) => (
+                <Skeleton height={200} width={180} />
+              ))}
+          </Slider>
+
           {!error && !isLoading && fiftyTwoWeekHighData.length === 0 && (
             <p>No stocks touch 52 week high today</p>
           )}
@@ -182,11 +185,13 @@ const CompanyBox = (props) => {
               <StockViewBox key={i} {...box} type="week" />
             ))}
           </Slider>
-          {fiftyTwoWeekLowData.length === 0 &&
-            isLoading &&
-            Array.from({ length: 5 }).map((b, i) => (
-              <Skeleton height={200} width={180} />
-            ))}
+          <Slider>
+            {fiftyTwoWeekLowData.length === 0 &&
+              isLoading &&
+              Array.from({ length: 5 }).map((b, i) => (
+                <Skeleton height={200} width={180} />
+              ))}
+          </Slider>
 
           {!error && !isLoading && fiftyTwoWeekLowData.length === 0 && (
             <p>No stocks touch 52 week low today</p>

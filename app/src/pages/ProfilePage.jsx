@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { userRequest } from "../apiRequest";
 import toast, { Toaster } from "react-hot-toast";
+import { tablet } from "../responsive";
 
 const Container = styled.div`
   display: flex;
@@ -20,6 +21,7 @@ const InnerBox = styled.div`
   box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.2);
   border-radius: 0.5em;
   padding: 3em;
+  ${tablet({ flexDirection: "column" })}
 `;
 
 const Left = styled.div`

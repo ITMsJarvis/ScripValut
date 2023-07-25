@@ -11,13 +11,34 @@ import {
   faCircleChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { userRequest } from "../apiRequest";
+import { mobile, tablet } from "../responsive";
+
+const createCancelToken = axios.CancelToken.source();
+const cancelToken = createCancelToken;
 
 const Container = styled.div`
   display: flex;
   align-items: center;
-  min-width: 70%;
+  justify-content: center;
+  width: 70%;
   min-height: 70px;
   padding: 0 1em;
+  gap: 2em;
+  flex-direction: column;
+  ${tablet({ width: "100%" })}
+`;
+
+const InnerBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 70px;
+  padding: 0 1em;
+  gap: 2em;
+  ${tablet({ justifyContent: "space-between", minWidth: "100%" })}
 `;
 
 const Left = styled.div`
@@ -34,6 +55,7 @@ const Center = styled.div`
   flex: 3;
   height: 100%;
   gap: 1em;
+  ${tablet({ display: "none" })}
 `;
 
 const Right = styled.div`
@@ -66,7 +88,7 @@ const CenterRight = styled.div`
 `;
 
 const SearchBar = styled.div`
-  width: 28.125rem;
+  width: 100%;
   height: 2.375rem;
   border-radius: 8px;
   border: 1px solid #ccc;
@@ -108,7 +130,7 @@ const Profile = styled.div`
 `;
 
 const ProfileLogo = styled.div`
-  width: 3.5rem;
+  min-width: 3.5rem;
   height: 3.5rem;
   border-radius: 48px;
   background: #4be94b;
@@ -160,6 +182,7 @@ const ProfileDropDown = styled.div`
   padding: 0.5em;
   box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.155);
   background-color: #fff;
+  z-index: 10;
 
   div {
     display: flex;
@@ -177,8 +200,34 @@ const ProfileDropDown = styled.div`
   }
 `;
 
+const SmallScreenNav = styled.div`
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  ${tablet({ display: "flex" })}
+`;
+
+const SmallScreenCenter = styled.div`
+  display: none;
+  align-items: center;
+  flex: 3;
+  height: 100%;
+  gap: 1em;
+  ${tablet({ display: "flex" })};
+  ${mobile({ flexDirection: "column" })}
+`;
+
 const Navbar = () => {
   const { pathname } = useLocation();
+
+  const { name, userid } = useSelector((state) => state.users);
+
+  const FirstName = name.split(" ")[0][0];
+  const LastName = name.split(" ")[1][0];
+
+  console.log(FirstName);
+  console.log(LastName);
 
   const [searchInput, setSearchInput] = useState("");
 
@@ -208,97 +257,152 @@ const Navbar = () => {
     }
   };
 
+  const HandleLogout = async () => {
+    try {
+      const res = await userRequest.post(`/user_auth/user_logout/${userid}`);
+      console.log(res.data.msg);
+      if (res.data.msg === "User logout successfully") {
+        localStorage.clear();
+
+        window.location.reload(true);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <Container>
-      <Left>
-        <Logo />
-      </Left>
-      <Center>
-        <CenterLeft>
-          <Navigator
-            active={pathname === "/explore" ? "true" : "false"}
-            to="/explore/stocks"
-          >
-            Explore
-          </Navigator>
-          <Navigator
-            active={pathname === "/investment" ? "true" : "false"}
-            to="/investment"
-          >
-            Investment
-          </Navigator>
-        </CenterLeft>
-        <CenterRight>
-          <SearchBar>
-            <img src="../../public/search.svg" />
-            <input
-              value={searchInput}
-              type="text"
-              onChange={(e) => HandleSearch(e)}
-            />
-            {StockList?.length > 0 && searchInput?.length > 0 && (
-              <Results>
-                {StockList?.map((stock, id) => (
-                  <Result
-                    key={id}
-                    to={`/stock/${stock.name.replace(/[-()]/g, "")}`}
-                    onClick={() => setStockList([])}
-                  >
-                    <p>{stock.name}</p>
-                    <h4>{stock.symbol}</h4>
-                  </Result>
-                ))}
-              </Results>
+      <InnerBox>
+        <Left>
+          <Link to="/">
+            <Logo />
+          </Link>
+        </Left>
+        <Center>
+          <CenterLeft>
+            <Navigator
+              active={pathname === "/explore" ? "true" : "false"}
+              to="/explore/stocks"
+            >
+              Explore
+            </Navigator>
+            <Navigator
+              active={pathname === "/investment" ? "true" : "false"}
+              to="/investment"
+            >
+              Investment
+            </Navigator>
+          </CenterLeft>
+          <CenterRight>
+            <SearchBar>
+              <img src="../../public/search.svg" />
+              <input
+                value={searchInput}
+                type="text"
+                onChange={(e) => HandleSearch(e)}
+              />
+              {StockList?.length > 0 && searchInput?.length > 0 && (
+                <Results>
+                  {StockList?.map((stock, id) => (
+                    <Result
+                      key={id}
+                      to={`/stock/${stock.name.replace(/[-()]/g, "")}`}
+                      onClick={() => setStockList([])}
+                    >
+                      <p>{stock.name}</p>
+                      <h4>{stock.symbol}</h4>
+                    </Result>
+                  ))}
+                </Results>
+              )}
+            </SearchBar>
+          </CenterRight>
+        </Center>
+        <Right>
+          <Profile>
+            <ProfileLogo>
+              <h1>{FirstName + LastName}</h1>
+            </ProfileLogo>
+            {!showProfile ? (
+              <FontAwesomeIcon
+                onClick={() => setShowProfile(!showProfile)}
+                icon={faChevronDown}
+              />
+            ) : (
+              <FontAwesomeIcon
+                onClick={() => setShowProfile(!showProfile)}
+                icon={faChevronUp}
+              />
             )}
-          </SearchBar>
-        </CenterRight>
-      </Center>
-      <Right>
-        <Profile>
-          <ProfileLogo>
-            <h1>AK</h1>
-          </ProfileLogo>
-          {!showProfile ? (
-            <FontAwesomeIcon
-              onClick={() => setShowProfile(!showProfile)}
-              icon={faChevronDown}
-            />
-          ) : (
-            <FontAwesomeIcon
-              onClick={() => setShowProfile(!showProfile)}
-              icon={faChevronUp}
-            />
-          )}
-
-          {/* <img
-            src="../../public/chevron-down.svg"
-            onClick={() => setShowProfile(!showProfile)}
-          /> */}
-          <ProfileDropDown show={showProfile ? "true" : "false"}>
-            <div>
-              <FontAwesomeIcon icon={faAddressCard} />
-              <Link
-                style={{
-                  textDecoration: "none",
-                  fontSize: "1.1em",
-                  color: "black",
-                  height: "2em",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-                to="/profile"
-              >
-                Profile
-              </Link>
-            </div>
-            <div>
-              <FontAwesomeIcon icon={faArrowRightFromBracket} />
-              <p>Logout</p>
-            </div>
-          </ProfileDropDown>
-        </Profile>
-      </Right>
+            <ProfileDropDown show={showProfile ? "true" : "false"}>
+              <div>
+                <FontAwesomeIcon icon={faAddressCard} />
+                <Link
+                  style={{
+                    textDecoration: "none",
+                    fontSize: "1.1em",
+                    color: "black",
+                    height: "2em",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                  to="/profile"
+                >
+                  Profile
+                </Link>
+              </div>
+              <div onClick={() => HandleLogout()}>
+                <FontAwesomeIcon icon={faArrowRightFromBracket} />
+                <p>Logout</p>
+              </div>
+            </ProfileDropDown>
+          </Profile>
+        </Right>
+      </InnerBox>
+      <SmallScreenNav>
+        <SmallScreenCenter>
+          <CenterLeft>
+            <Navigator
+              active={pathname === "/explore" ? "true" : "false"}
+              to="/explore/stocks"
+            >
+              Explore
+            </Navigator>
+            <Navigator
+              active={pathname === "/investment" ? "true" : "false"}
+              to="/investment"
+            >
+              Investment
+            </Navigator>
+          </CenterLeft>
+          <CenterRight>
+            <SearchBar>
+              <img src="../../public/search.svg" />
+              <input
+                value={searchInput}
+                type="text"
+                onChange={(e) => HandleSearch(e)}
+              />
+              {StockList?.length > 0 && searchInput?.length > 0 && (
+                <Results>
+                  {StockList?.map((stock, id) => (
+                    <Result
+                      key={id}
+                      to={`/stock/${stock.name.replace(/[-()]/g, "")}`}
+                      onClick={() => setStockList([])}
+                    >
+                      <p>{stock.name}</p>
+                      <h4>{stock.symbol}</h4>
+                    </Result>
+                  ))}
+                </Results>
+              )}
+            </SearchBar>
+          </CenterRight>
+        </SmallScreenCenter>
+      </SmallScreenNav>
     </Container>
   );
 };

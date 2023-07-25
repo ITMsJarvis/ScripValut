@@ -5,6 +5,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useGetIndices } from "../customhooks/useGetIndices";
 import { Link } from "react-router-dom";
+import { tablet } from "../responsive";
 
 const Container = styled.div`
   width: 100%;
@@ -30,13 +31,15 @@ const Title = styled.h2`
 const Bottom = styled.div`
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   justify-content: space-between;
   width: 100%;
+  gap: 1em;
+  flex-wrap: wrap;
+  ${tablet({ justifyContent: "center" })}
 `;
 
 const Widgets = styled.div`
-  min-width: 24%;
+  max-width: 15em;
   box-shadow: 0px 0px 9px 1px rgba(0, 0, 0, 0.1);
   border-radius: 0.5em;
   padding: 0.8em;
@@ -68,6 +71,7 @@ const LoaderDiv = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   width: 100%;
+  gap: 1em;
 `;
 
 const LoaderSkeletons = styled(Skeleton)`

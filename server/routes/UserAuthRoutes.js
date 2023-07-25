@@ -28,7 +28,7 @@ router.post("/user_login", UserLoginValidator, LoginUser);
 
 //Refresh Token
 
-router.post("/refreshToken", verifyTokenandUser, RefreshToken);
+router.post("/refreshToken", RefreshToken);
 
 //Forgotpassword
 
