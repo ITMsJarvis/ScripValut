@@ -208,7 +208,7 @@ export const ForgotPassword = async (req, res) => {
 };
 
 export const ResetPassword = async (req, res) => {
-  const { refreshToken, newPassword } = req.body;
+  const { refreshToken, password } = req.body;
 
   try {
     const user = await User.findOne({ refreshToken });
@@ -217,7 +217,7 @@ export const ResetPassword = async (req, res) => {
       return res.status(404).json("Token is invalid,try reset mail again");
     }
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     user.password = hashedPassword;
 

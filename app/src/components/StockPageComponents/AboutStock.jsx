@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { mobile } from "../../responsive";
 
 const Container = styled.div`
   display: flex;
@@ -20,6 +21,7 @@ const Heading = styled.p`
 const MainBox = styled.div`
   display: flex;
   border-radius: 0.5em;
+  ${mobile({ flexDirection: "column", alignItems: "start" })}
 `;
 
 const DescriptionBox = styled.p`
@@ -36,6 +38,7 @@ const Left = styled.div`
   color: #44475b;
   border-right: 1px dashed #afafaf;
   padding-right: 1em;
+  ${mobile({ borderRight: "none", paddingRight: "0" })}
 `;
 
 const Right = styled.div`
@@ -45,6 +48,7 @@ const Right = styled.div`
   flex: 1;
   color: #44475b;
   padding-left: 1em;
+  ${mobile({ borderRight: "none", paddingLeft: "0" })}
 `;
 
 const Row = styled.div`
@@ -52,6 +56,12 @@ const Row = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 2em;
+  p {
+    flex: 1;
+  }
+  h4 {
+    flex: 1;
+  }
 `;
 
 const AboutStock = () => {

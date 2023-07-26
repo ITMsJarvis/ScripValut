@@ -12,6 +12,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   color: #44475b;
+  height: 50%;
 `;
 
 const Top = styled.div`
@@ -289,7 +290,11 @@ const StockInfo = () => {
               justifyContent: "center",
             }}
           >
-            {CurrentStockData["basic_info"]["recommendationKey"]}
+            {CurrentStockData["basic_info"]["recommendationKey"] === "none"
+              ? "👎 NONE"
+              : CurrentStockData["basic_info"]["recommendationKey"] === "hold"
+              ? "✋ HOLD"
+              : "👍 BUY"}
           </div>
         </Analysis>
         <Counter>

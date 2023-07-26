@@ -6,6 +6,7 @@ import WathclistTable from "./WathclistTable";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import axios, { Axios } from "axios";
+import { mobile } from "../responsive";
 
 const Container = styled.div`
   display: flex;
@@ -53,6 +54,21 @@ const Box = styled.div`
 
   p {
     font-weight: 600;
+  }
+`;
+
+const SliderComponent = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  width: 70%;
+  /* flex-grow: 1;
+  flex-shrink: 0; */
+  overflow-x: scroll;
+  ${mobile({ width: "80%" })}
+
+  ::-webkit-scrollbar {
+    display: none;
   }
 `;
 
@@ -166,8 +182,11 @@ const Investment = () => {
           </Box>
         </AssestBox>
       </InvestMentBox>
-      <h1>PortFolio</h1>
-      <Portfolio />
+      <h1>Portfolio</h1>
+      <SliderComponent>
+        <Portfolio />
+      </SliderComponent>
+
       <h1>Watchlist </h1>
       <WathclistTable />
     </Container>

@@ -20,6 +20,7 @@ import TableComponent from "./components/TableComponent";
 import StockPage from "./pages/StockPage";
 import ProfilePage from "./pages/ProfilePage";
 import Introduction from "./pages/Introduction";
+import Chart from "./pages/Chart";
 
 const Container = styled.main`
   display: flex;
@@ -71,6 +72,7 @@ function App() {
 
             <Route path="/stock/:name" element={<StockPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/chart" element={<Chart />} />
           </Route>
         </Routes>
       </Router>

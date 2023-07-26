@@ -18,6 +18,7 @@ import AboutStock from "../components/StockPageComponents/AboutStock";
 import ShareHolding from "../components/StockPageComponents/ShareHolding";
 import { io } from "socket.io-client";
 import { SetLivePrice } from "../redux/StockDetailsSlice";
+import { tablet } from "../responsive";
 
 const Container = styled.div`
   display: flex;
@@ -28,12 +29,13 @@ const Container = styled.div`
   gap: 1em;
   margin-top: 2em;
   margin-bottom: 2em;
+  ${tablet({ flexDirection: "column", width: "100%" })}
 `;
 
 const Left = styled.div`
   flex: 1;
   /* border: 1px solid red; */
-  min-height: 30%;
+  max-height: 30%;
   position: sticky;
 `;
 
@@ -211,12 +213,6 @@ const StockPage = () => {
           <Financials />
           <AboutStock />
           <ShareHolding />
-          {/* <StockDescriptionBox />
-            <KeyIndicators>
-              <FinancialTable />
-              <ToggleTableFinace />
-            </KeyIndicators>
-            <ShareHolding /> */}
         </Right>
       </Container>
     );

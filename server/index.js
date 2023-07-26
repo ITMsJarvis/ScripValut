@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "https://my-stock-api.onrender.com/",
+    origin: [process.env.FRONTEND_URL],
   })
 );
 

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { mobile } from "../../responsive";
 
 const Container = styled.div`
   display: flex;
@@ -19,6 +20,7 @@ const Heading = styled.p`
 const MainBox = styled.div`
   display: flex;
   gap: 1.5em;
+  ${mobile({ flexDirection: "column" })}
 `;
 
 const Left = styled.div`
@@ -29,6 +31,7 @@ const Left = styled.div`
   color: #44475b;
   border-right: 1px dashed #afafaf;
   padding-right: 1em;
+  ${mobile({ borderRight: "none" })}
 `;
 
 const Right = styled.div`

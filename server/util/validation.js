@@ -59,8 +59,6 @@ export const UserPasswordValidator = [
   check("password")
     .notEmpty()
     .withMessage("Password is required")
-    .isLength({ min: 6 })
-    .withMessage("Password length must be min 6 char")
     .trim()
     .escape(),
   manageErrors((error, req, res) => res.status(422).json({ error })),

@@ -122,7 +122,7 @@ export const PasswordReset = async (dispatch, email) => {
   }
 };
 
-export const ResetPassword = async (dispatch, newPassword, token) => {
+export const ResetPassword = async (dispatch, password, token) => {
   dispatch(ClearErrorList());
 
   dispatch(ResetPasswordStarted());
@@ -130,7 +130,7 @@ export const ResetPassword = async (dispatch, newPassword, token) => {
   try {
     const res = await publicRequest.post("/user_auth/resetpassword", {
       refreshToken: token,
-      newPassword,
+      password,
     });
 
     if (res.status === 200) {
