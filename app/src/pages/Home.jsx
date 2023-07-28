@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import Footer from "../components/Footer";
+import TradingViewWidget from "../components/TickerWidget";
 
 const Container = styled.div`
   display: flex;
@@ -16,6 +17,7 @@ const Home = () => {
   return (
     <Container>
       <Navbar />
+      <TradingViewWidget />
       <Outlet />
       <Footer />
     </Container>

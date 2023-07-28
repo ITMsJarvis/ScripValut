@@ -1,12 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import MarketMood from "../components/MarketMood";
+import { mobile } from "../responsive";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 70%;
   gap: 3em;
+  ${mobile({ width: "90%" })}
 `;
 
 const Top = styled.div`
@@ -133,9 +136,9 @@ const Introduction = () => {
         <Link to="/explore/stocks" style={{ textDecoration: "none" }}>
           <Button>Get Started</Button>
         </Link>
-
         <img src="../../introbg.svg" alt="" />
       </Top>
+      <MarketMood />
       <Center>
         <Title>Indian Markets at your fingertips</Title>
         <img src="../../stockprice.svg" />

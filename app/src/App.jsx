@@ -20,7 +20,7 @@ import TableComponent from "./components/TableComponent";
 import StockPage from "./pages/StockPage";
 import ProfilePage from "./pages/ProfilePage";
 import Introduction from "./pages/Introduction";
-import Chart from "./pages/Chart";
+import MutualFundPage from "./pages/MutualFundPage";
 
 const Container = styled.main`
   display: flex;
@@ -72,7 +72,10 @@ function App() {
 
             <Route path="/stock/:name" element={<StockPage />} />
             <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/chart" element={<Chart />} />
+            <Route
+              path="/mutualfund/:name/:code"
+              element={<MutualFundPage />}
+            />
           </Route>
         </Routes>
       </Router>

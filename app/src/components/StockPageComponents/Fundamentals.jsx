@@ -102,8 +102,9 @@ const Fundamentals = () => {
           <Row>
             <p>ROE</p>
             <h4>
-              {CurrentStockData["basic_info"]["returnOnEquity"]?.toFixed(3) *
-                100}{" "}
+              {(CurrentStockData["basic_info"]["returnOnEquity"] * 100).toFixed(
+                2
+              )}{" "}
               %
             </h4>
           </Row>
