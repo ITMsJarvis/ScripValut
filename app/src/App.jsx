@@ -9,7 +9,7 @@ import {
 import AuthorizationPage from "./pages/AuthorizationPage";
 import Home from "./pages/Home";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Stocks from "./components/Stocks";
 import Investment from "./components/Investment";
 import StockHome from "./components/StockHome";
@@ -21,6 +21,7 @@ import StockPage from "./pages/StockPage";
 import ProfilePage from "./pages/ProfilePage";
 import Introduction from "./pages/Introduction";
 import MutualFundPage from "./pages/MutualFundPage";
+import { GetMutualFund } from "./apicalls/MutualFundCalls";
 
 const Container = styled.main`
   display: flex;
@@ -33,6 +34,12 @@ function App() {
   // const [user, setUser] = useState(0);
 
   const { username } = useSelector((state) => state.users);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    GetMutualFund(dispatch);
+  }, []);
 
   return (
     <Container>

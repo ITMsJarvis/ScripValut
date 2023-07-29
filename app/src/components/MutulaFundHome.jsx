@@ -44,12 +44,6 @@ const Loader = styled.div`
 const MutulaFundHome = () => {
   const { MFList } = useSelector((state) => state.mutualFund);
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    GetMutualFund(dispatch);
-  }, []);
-
   if (MFList.length === 0) {
     return <Loader />;
   }

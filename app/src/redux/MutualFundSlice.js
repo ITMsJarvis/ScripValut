@@ -7,6 +7,10 @@ const MutualFundSlice = createSlice({
     currentMF: {},
     error: false,
     isLoading: false,
+    openpopup: false,
+    Investtype: "",
+    sipdate: "",
+    frequency: "",
   },
   reducers: {
     GetMFListStarted: (state, action) => {
@@ -33,6 +37,25 @@ const MutualFundSlice = createSlice({
       state.isLoading = false;
       state.error = true;
     },
+    SetopenPopup: (state, action) => {
+      if (state.openpopup === true) {
+        state.openpopup = false;
+        if (action.payload) {
+          state.type = action.payload;
+        }
+      } else if (state.openpopup === false) {
+        state.openpopup = true;
+        if (action.payload) {
+          state.type = action.payload;
+        }
+      }
+    },
+    SetSIPDate: (state, action) => {
+      state.sipdate = action.payload;
+    },
+    SetSipFrequncy: (state, action) => {
+      state.frequency = action.payload;
+    },
   },
 });
 
@@ -43,6 +66,9 @@ export const {
   GetCurrentMFStarted,
   GetCurrentMFSuccess,
   GetCurrentMFFailed,
+  SetopenPopup,
+  SetSIPDate,
+  SetSipFrequncy,
 } = MutualFundSlice.actions;
 
 export default MutualFundSlice.reducer;

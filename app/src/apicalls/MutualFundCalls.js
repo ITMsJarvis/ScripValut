@@ -56,7 +56,9 @@ export const GetMutualFund = async (dispatch) => {
     for (let mf of List) {
       console.log(mf.name);
       const res = await axios.get(
-        `http://127.0.0.1:8000/get-mutual-fund/${mf.name}/${mf.code}`
+        `${import.meta.env.VITE_STOCK_API}/get-mutual-fund/${mf.name}/${
+          mf.code
+        }`
       );
 
       if (res.status === 200) {
@@ -81,7 +83,7 @@ export const GetCurrentMF = async (dispatch, code) => {
 
   try {
     const res = await axios.get(
-      `http://127.0.0.1:8000/get-mutual-fund-history/${code}`
+      `${import.meta.env.VITE_STOCK_API}/get-mutual-fund-history/${code}`
     );
 
     console.log(res.data);

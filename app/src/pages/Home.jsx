@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import Footer from "../components/Footer";
 import TradingViewWidget from "../components/TickerWidget";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   display: flex;
@@ -11,11 +12,15 @@ const Container = styled.div`
   justify-content: space-between;
   flex-direction: column;
   width: 100%;
+  position: relative;
+  height: ${(props) => props.show === "open" && "100vh"};
 `;
 
 const Home = () => {
+  const { openpopup } = useSelector((state) => state.mutualFund);
+
   return (
-    <Container>
+    <Container show={openpopup === true ? "open" : "close"}>
       <Navbar />
       <TradingViewWidget />
       <Outlet />

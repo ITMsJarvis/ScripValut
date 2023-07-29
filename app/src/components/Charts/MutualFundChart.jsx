@@ -25,6 +25,16 @@ const Container = styled.div`
 const MutualFundChart = (props) => {
   return (
     <Container>
+      <h4>All time NAV. Chart:</h4>
+      <h3>
+        Current Nav.:
+        <span style={{ color: "#4BE94B" }}>
+          ₹{" "}
+          {props.data?.map((d, i) => {
+            return i === 0 && d.nav;
+          })}
+        </span>
+      </h3>
       <ResponsiveContainer width="100%" height={400}>
         <LineChart
           data={props.data?.map((d) => ({ ...d, nav: +d.nav }))}

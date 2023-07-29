@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { tablet } from "../responsive";
+import { mobile, tablet } from "../responsive";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { GetCurrentMF } from "../apicalls/MutualFundCalls";
 import axios from "axios";
 
 import MutualFundChart from "../components/Charts/MutualFundChart";
+import MutualFundInvest from "../components/MutualFundInvest";
+import { SetopenPopup } from "../redux/MutualFundSlice";
 
 const Container = styled.div`
   width: 70%;
@@ -32,6 +34,7 @@ const HeaderRight = styled.div`
   display: flex;
   align-items: center;
   gap: 2em;
+  ${mobile({ flexDirection: "column" })}
 `;
 
 const Button = styled.div`
@@ -55,6 +58,7 @@ const ContentBox = styled.div`
   display: flex;
   gap: 2em;
   flex-wrap: wrap;
+  ${tablet({ flexDirection: "column" })}
 `;
 
 const FundInfo = styled.div`
@@ -79,12 +83,13 @@ const Column = styled.div`
 
 const Row = styled.div`
   width: 100%;
-  height: 4em;
+  min-height: 4em;
   padding: 0.5em;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid #f1f0f0;
+  gap: 2em;
   p {
     font-size: 0.9em;
     font-weight: 500;
@@ -109,20 +114,22 @@ const MutualFundPage = () => {
 
   const [SelectedFund, setSelectedFund] = useState();
 
+  const getData = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_STOCK_API}/get-mutual-fund/${name}/${code}`
+      );
+
+      setSelectedFund(res.data[0]);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const x = useMemo(getData, []);
+
   useEffect(() => {
     let isSubscribe = true;
-
-    const getData = async () => {
-      try {
-        const res = await axios.get(
-          `http://127.0.0.1:8000/get-mutual-fund/${name}/${code}`
-        );
-
-        setSelectedFund(res.data[0]);
-      } catch (e) {
-        console.log(e);
-      }
-    };
 
     if (isSubscribe) {
       getData();
@@ -137,17 +144,25 @@ const MutualFundPage = () => {
     GetCurrentMF(dispatch, code);
   }, [code]);
 
-  console.log(currentMF?.data);
-
   return (
     <Container>
+      <MutualFundInvest />
       <Header>
         <HearderLeft>
           <h2>{SelectedFund?.scheme_name}</h2>
         </HearderLeft>
         <HeaderRight>
-          <Button direction="left">One Time</Button>
-          <Button>SIP</Button>
+          <Button
+            direction="left"
+            onClick={() => dispatch(SetopenPopup("One Time Investment"))}
+          >
+            One Time
+          </Button>
+          <Button
+            onClick={() => dispatch(SetopenPopup("Systematic Investment Plan"))}
+          >
+            SIP
+          </Button>
         </HeaderRight>
       </Header>
       <RatioTable>
