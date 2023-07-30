@@ -129,7 +129,7 @@ const StockPage = () => {
     // const socket = io(
     //   "https://realtimestockchartapi-production.up.railway.app/"
     // );
-    const socket = io("https://socket-api-backend.onrender.com");
+    const socket = io(`${import.meta.env.VITE_SOCKET_API}`);
     // const socket = io("http://localhost:4000");
     socket.on("connect", () => {
       setIsConnected(socket.connected);

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { userRequest } from "../apiRequest";
+import { userRequest, publicRequest } from "../apiRequest";
 import toast, { Toaster } from "react-hot-toast";
 import { tablet } from "../responsive";
 
@@ -85,7 +85,7 @@ const ProfilePage = () => {
 
   const HandleUpdate = async () => {
     try {
-      const res = userRequest.post(
+      const res = publicRequest.post(
         `/user_auth/user_update/${userid}?filter=all`,
         {
           mobileNumber,

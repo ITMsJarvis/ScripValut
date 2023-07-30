@@ -44,6 +44,6 @@ router.post("/user_logout/:id", UserLogout);
 
 //Update User
 
-router.post("/user_update/:id", verifyTokenandUser, UpdateUser);
+router.post("/user_update/:id", UpdateUser);
 
 export default router;
