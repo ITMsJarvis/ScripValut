@@ -8,7 +8,7 @@ const generateAccesToken = (user) => {
   return jwt.sign(
     { id: user._id, isAdmin: user.isAdmin },
     process.env.JWT_SECRET_KEY,
-    { expiresIn: "30m" }
+    { expiresIn: "5m" }
   );
 };
 
@@ -28,7 +28,7 @@ export const RefreshToken = async (req, res) => {
       return res.status(401).json("Token is missing");
     }
 
-    const user = await User.findOne({ refreshToken: req.body.refreshToken });
+    const user = await User.findOne({ refreshToken: refreshToken });
 
     if (!user) {
       return res.status(401).json("Token is not valid");
@@ -36,6 +36,9 @@ export const RefreshToken = async (req, res) => {
 
     const NewAccessToken = generateAccesToken(user);
     const NewRefreshToken = generateRefreshToken(user);
+
+    console.log(NewAccessToken);
+    console.log(NewRefreshToken);
 
     user.refreshToken = NewRefreshToken;
 

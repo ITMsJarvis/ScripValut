@@ -14,10 +14,13 @@ export const userRequest = axios.create({
 });
 
 const GenerateRefreshToken = async () => {
+  console.log(refreshToken);
   try {
     const res = await publicRequest.post("/user_auth/refreshToken", {
-      refreshToken,
+      refreshToken: refreshToken,
     });
+
+    console.log(res.data);
 
     const NewAccessToken = res.data.NewAccessToken;
 
@@ -42,7 +45,7 @@ userRequest.interceptors.request.use(
 
       console.log(token);
 
-      if (token.exp * 1000 < currentTime) {
+      if (token.exp * 1000 <= currentTime) {
         const data = await GenerateRefreshToken();
         console.log(data);
         console.log(accessToken);

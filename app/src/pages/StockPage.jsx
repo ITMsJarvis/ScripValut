@@ -52,11 +52,32 @@ const KeyIndicators = styled.div`
   gap: 1em;
 `;
 
-const Loader = styled.iframe`
-  width: 100%;
-  height: 100vh;
-  outline: none;
-  border: none;
+// const Loader = styled.iframe`
+//   width: 100%;
+//   height: 100vh;
+//   outline: none;
+//   border: none;
+// `;
+
+const Loader = styled.div`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border-top: 5px solid #4be94b;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid #4be94b;
+  animation: rotate 5s linear infinite;
+  margin-top: 2em;
+
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 `;
 
 const StockPage = () => {
@@ -189,7 +210,7 @@ const StockPage = () => {
   }, [oneDayChart]);
 
   if (CurrentStockData.length === 0) {
-    return <h1>Loading....</h1>;
+    return <Loader />;
   } else {
     return (
       <Container>
@@ -197,7 +218,13 @@ const StockPage = () => {
           <StockInfo />
         </Left>
         <Right>
-          <p>{isConnected ? "Connected" : "disconnect"}</p>
+          <p style={{ color: "#4be93b" }}>
+            {isConnected ? "Connected" : "disconnect"}
+          </p>
+          <small style={{ color: "#3a4beb" }}>
+            Note : Server will take some time to connect due to load wait or
+            refresh to get connected
+          </small>
           <StockChart
             stockList={[
               oneDayChart,

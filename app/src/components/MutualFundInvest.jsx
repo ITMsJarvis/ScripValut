@@ -17,7 +17,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { userRequest } from "../apiRequest";
+import { userRequest, publicRequest } from "../apiRequest";
 import toast, { Toaster } from "react-hot-toast";
 
 const Container = styled.div`
@@ -181,6 +181,7 @@ const SelectSmall = () => {
 const MutualFundInvest = () => {
   const [Amount, setAmount] = useState(0);
   const [inputData, setInputData] = useState(null);
+  const [SellUnits, setSellUnits] = useState(0);
 
   const { openpopup, type, currentMF, Investtype, sipdate, frequency } =
     useSelector((state) => state.mutualFund);
@@ -215,8 +216,8 @@ const MutualFundInvest = () => {
 
   const HandleInvest = async () => {
     try {
-      const res = await userRequest.post(
-        "/mutualfund/buymutualfund",
+      const res = await publicRequest.post(
+        `/mutualfund/buymutualfund/${userid}`,
         inputData
       );
 
@@ -227,6 +228,34 @@ const MutualFundInvest = () => {
       }
     } catch (e) {
       const notify = () => toast.error("Something went wrong");
+
+      notify();
+    }
+  };
+
+  const HandleSell = async () => {
+    const data = {
+      userid: userid,
+      fundName: inputData.fundName,
+      units: SellUnits,
+      status: "Sold",
+      code: inputData.code,
+      marketPrice: inputData.nav,
+    };
+
+    try {
+      const res = await publicRequest.post(
+        `/mutualfund/sellMF/${userid}`,
+        data
+      );
+
+      if (res.status === 200) {
+        const notify = () => toast.success(res.data);
+        notify();
+      }
+    } catch (e) {
+      console.log(e);
+      const notify = () => toast.error(e.response.data);
 
       notify();
     }
@@ -275,6 +304,18 @@ const MutualFundInvest = () => {
           order from the open orders tab on the portfolio page.
         </p>
         <Button onClick={() => HandleInvest()}>Invest</Button>
+      </InfoBox>
+      <InfoBox>
+        <h4>Sell units:</h4>
+        <AmountBox>
+          <input
+            type="number"
+            placeholder="Enter quantity"
+            value={SellUnits}
+            onChange={(e) => setSellUnits(e.target.value)}
+          />
+        </AmountBox>
+        <Button onClick={() => HandleSell()}>Sell</Button>
       </InfoBox>
     </Container>
   );

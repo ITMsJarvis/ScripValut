@@ -30,7 +30,7 @@ const MainLogo = styled.div`
 const Logo = () => {
   return (
     <MainLogo>
-      <img src="../Logo_svg.svg" alt="Logo" />
+      <img src="../Logo.png" alt="Logo" />
     </MainLogo>
   );
 };

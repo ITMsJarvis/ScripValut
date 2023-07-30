@@ -7,6 +7,8 @@ import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import axios, { Axios } from "axios";
 import { mobile } from "../responsive";
+import MutualFundPortfolio from "./MutualFundPortfolio";
+import { userRequest } from "../apiRequest";
 
 const Container = styled.div`
   display: flex;
@@ -62,8 +64,6 @@ const SliderComponent = styled.div`
   align-items: center;
   justify-content: start;
   width: 70%;
-  /* flex-grow: 1;
-  flex-shrink: 0; */
   overflow-x: scroll;
   ${mobile({ width: "80%" })}
 
@@ -75,19 +75,25 @@ const SliderComponent = styled.div`
 const Investment = () => {
   const [MyinvestMent, setMyInvestMent] = useState(0);
 
+  const [MFInvestMent, setMFInvestMent] = useState(0);
+
   const [MyBalance, setMyBalance] = useState(0);
 
   const { userid } = useSelector((state) => state.users);
 
+  const { pathname } = useLocation();
+
   useEffect(() => {
+    let isSubscribe = true;
+
     const getData = async () => {
       try {
         const res = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/stocks/getAllstocks`,
-          { userid: userid }
+          `${import.meta.env.VITE_BASE_URL}/stocks/getAllstocks/${userid}`,
+          {
+            userid: userid,
+          }
         );
-
-        console.log(res.data);
 
         const data = res.data;
 
@@ -95,31 +101,68 @@ const Investment = () => {
           (acc, val) => acc + val.marketPrice * val.totalQuantity,
           0
         );
-
         setMyInvestMent(totalInvestMent);
       } catch (e) {
         console.log(e);
       }
     };
 
-    let intervalId = setTimeout(getData, 5000);
+    const delayGetData = () => {
+      setTimeout(getData, 5000);
+    };
+
+    if (MyinvestMent.length === 0) {
+      delayGetData();
+    }
+
+    let intervalId = setInterval(getData, 60000);
+
+    return () => {
+      clearInterval(intervalId);
+      isSubscribe = false;
+    };
+  }, [pathname]);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const res1 = await axios.post(
+          `${import.meta.env.VITE_BASE_URL}/mutualfund/getAllMF`,
+          { userid: userid }
+        );
+
+        const data1 = res1.data;
+
+        console.log(data1);
+
+        let TotalMfInvestment = data1.reduce(
+          (acc, val) => acc + val.marketPrice * val.units,
+          0
+        );
+
+        setMFInvestMent(TotalMfInvestment);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    if (MFInvestMent.length === 0) {
+      getData();
+    }
+
+    let intervalId = setInterval(getData, 60000);
 
     return () => {
       clearInterval(intervalId);
     };
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
-    let isSubscription = true;
-
     const getData = async () => {
       try {
-        const res = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/stocks/getBalance`,
-          { userid: userid }
-        );
-
-        console.log(res.data);
+        const res = await userRequest.post(`/stocks/getBalance/${userid}`, {
+          userid: userid,
+        });
 
         const balance = Number(res.data.walletbalance).toFixed(1);
 
@@ -129,24 +172,19 @@ const Investment = () => {
       }
     };
 
-    if (isSubscription) {
-      getData();
-    }
-
-    return () => {
-      isSubscription = false;
-    };
-  }, []);
-
-  console.log(MyBalance);
-  console.log(MyinvestMent);
+    getData();
+  }, [pathname]);
 
   return (
     <Container>
       <InstrumentTabs />
+      <small style={{ color: "#2759e5" }}>
+        Note : Details will take some time to load please wait for few seconds
+      </small>
       <InvestMentBox>
         <Title>
-          My Total Investments ₹{(MyinvestMent.toFixed(1) / 1000).toFixed(2)}K
+          My Total Investments ₹
+          {((MyinvestMent + MFInvestMent) / 1000).toFixed(2)}K
         </Title>
         <AssestBox>
           <Box>
@@ -157,7 +195,7 @@ const Investment = () => {
           <Box>
             <img src="../../mutualfund.png" />
             <h3>Mutual Funds</h3>
-            <p>₹ 0 k</p>
+            <p>₹ {(MFInvestMent.toFixed(1) / 1000).toFixed(2)} k</p>
           </Box>
         </AssestBox>
       </InvestMentBox>
@@ -177,18 +215,27 @@ const Investment = () => {
         <AssestBox>
           <Box>
             <h1>
-              ₹ {((MyinvestMent + Number(MyBalance)) / 1000).toFixed(2)} k
+              ₹{" "}
+              {(
+                (MyinvestMent + MFInvestMent + Number(MyBalance)) /
+                1000
+              ).toFixed(2)}{" "}
+              k
             </h1>
           </Box>
         </AssestBox>
       </InvestMentBox>
-      <h1>Portfolio</h1>
+      <h1>Stock Portfolio</h1>
       <SliderComponent>
         <Portfolio />
       </SliderComponent>
+      <h1>Mutual Fund Portfolio</h1>
+      <SliderComponent>
+        <MutualFundPortfolio />
+      </SliderComponent>
 
       <h1>Watchlist </h1>
-      <WathclistTable />
+      <WathclistTable id="watchlist" />
     </Container>
   );
 };

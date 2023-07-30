@@ -1,6 +1,4 @@
 import mongoose from "mongoose";
-import Portfolio from "./PortFolioModel.js";
-import WatchList from "./WatchlistModel.js";
 
 const UserSchema = new mongoose.Schema(
   {

@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import axios from "axios";
-import { publicRequest } from "../apiRequest";
+import { publicRequest, userRequest } from "../apiRequest";
 import toast, { Toaster } from "react-hot-toast";
 
 const Container = styled.div`
@@ -208,14 +208,18 @@ const StockInfo = () => {
           sector: CurrentStockData["basic_info"]["sector"],
         };
 
-        const res = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/stocks/buystock`,
+        const res = await publicRequest.post(
+          `/stocks/buystock/${userid}`,
           data
         );
 
         const success = () => toast.success(res.data);
 
         success();
+
+        // if (res.status === 200) {
+        //   window.location.href = "/investment";
+        // }
       } catch (e) {
         const failure = () => toast.error("Something went wrong");
 
@@ -243,20 +247,50 @@ const StockInfo = () => {
           sector: CurrentStockData["basic_info"]["sector"],
         };
 
-        const res = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/stocks/sellstock`,
+        const res = await publicRequest.post(
+          `/stocks/sellstock/${userid}`,
           data
         );
-
         const success = () => toast.success(res.data);
 
         success();
+
+        // if (res.status === 200) {
+        //   window.location.href = "/investment";
+        // }
       } catch (e) {
         console.log(e);
         const failure = () => toast.error(e.response.data);
 
         failure();
       }
+    }
+  };
+
+  const HandleAddtoWatchList = async () => {
+    const data = {
+      userid: userid,
+      stockname: CurrentStockData["basic_info"]["longName"],
+      status: "Watchlist",
+    };
+
+    try {
+      const res = await publicRequest.post(
+        `/stocks/addtowatchlist/${userid}`,
+        data
+      );
+
+      const Success = () => toast.success(res.data);
+      Success();
+
+      // if (res.status === 200) {
+
+      //   window.location.href = "/investment";
+      // }
+    } catch (e) {
+      const Error = () => toast.error("Something went wrong");
+
+      Error();
     }
   };
 
@@ -327,6 +361,16 @@ const StockInfo = () => {
             SELL
           </Button>
         </Buttons>
+        <Button
+          onClick={() => HandleAddtoWatchList()}
+          style={{
+            width: "100%",
+            backgroundColor: "#189AD3",
+            marginTop: "2em",
+          }}
+        >
+          Add to Watchlist
+        </Button>
       </PriceSection>
     </Container>
   );

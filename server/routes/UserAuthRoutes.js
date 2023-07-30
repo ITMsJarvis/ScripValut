@@ -40,7 +40,7 @@ router.post("/resetPassword", UserPasswordValidator, ResetPassword);
 
 //User Logout
 
-router.post("/user_logout/:id", verifyTokenandUser, UserLogout);
+router.post("/user_logout/:id", UserLogout);
 
 //Update User
 

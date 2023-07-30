@@ -6,6 +6,7 @@ import toast, { Toaster } from "react-hot-toast";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { publicRequest, userRequest } from "../apiRequest";
 
 const Container = styled.div`
   width: 11.29rem;
@@ -97,8 +98,8 @@ const StockViewBox = ({ ...props }) => {
     };
 
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/stocks/addtowatchlist`,
+      const res = await publicRequest.post(
+        `/stocks/addtowatchlist/${userid}`,
         data
       );
 

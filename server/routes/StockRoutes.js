@@ -6,6 +6,7 @@ import {
   GetUserAllStocks,
   GetWatchList,
   SearchStock,
+  deleteFromWatchList,
   soldStock,
   // AllSectorData,
   // AllTopstocksAllCap,
@@ -13,6 +14,7 @@ import {
   // GetIndices,
   // GetStockDetails,
 } from "../controllers/StockControllers.js";
+import { verifyTokenandUser } from "../util/verifyToken.js";
 
 const router = express.Router();
 
@@ -42,30 +44,34 @@ const router = express.Router();
 
 // Add stock to watchList
 
-router.post("/addtowatchlist", AddtoWatchList);
+router.post("/addtowatchlist/:id", AddtoWatchList);
 
 // buy stock
 
-router.post("/buystock", BuyStock);
+router.post("/buystock/:id", BuyStock);
 
 //sell stock
 
-router.post("/sellstock", soldStock);
+router.post("/sellstock/:id", soldStock);
 
 //Get all users stocks
 
-router.post("/getAllstocks", GetUserAllStocks);
+router.post("/getAllstocks/:id", GetUserAllStocks);
 
 //Get Wathlist of user
 
-router.post("/getwatchlist", GetWatchList);
+router.post("/getwatchlist/:id", GetWatchList);
 
 //Get WalletBalance of user
 
-router.post("/getBalance", GetBalance);
+router.post("/getBalance/:id", GetBalance);
 
 //Search Stocks
 
 router.get("/searchstocks", SearchStock);
+
+//remove from watchlist
+
+router.post("/removewatchlist", deleteFromWatchList);
 
 export default router;

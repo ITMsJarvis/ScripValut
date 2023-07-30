@@ -258,3 +258,23 @@ export const SearchStock = async (req, res) => {
     res.status(500).send("Something went wrong");
   }
 };
+
+export const deleteFromWatchList = async (req, res) => {
+  const { userid, stockname, status } = req.body;
+
+  try {
+    const isPresent = await Stock.findOne({
+      userid: userid,
+      stockname: stockname,
+      status: status,
+    });
+
+    if (isPresent) {
+      await Stock.findByIdAndDelete(isPresent._id);
+    }
+
+    res.status(200).send("removed successfully...");
+  } catch (e) {
+    res.status(500).send("Something went wrong...");
+  }
+};

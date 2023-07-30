@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "../components/Navbar";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Footer from "../components/Footer";
 import TradingViewWidget from "../components/TickerWidget";
@@ -13,7 +13,7 @@ const Container = styled.div`
   flex-direction: column;
   width: 100%;
   position: relative;
-  height: ${(props) => props.show === "open" && "100vh"};
+  min-height: ${(props) => props.show === "open" && "100vh"};
 `;
 
 const Home = () => {

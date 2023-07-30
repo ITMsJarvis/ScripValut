@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import InstrumentTabs from "./InstrumentTabs";
 import styled from "styled-components";

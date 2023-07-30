@@ -12,7 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { userRequest } from "../apiRequest";
+import { userRequest, publicRequest } from "../apiRequest";
 import { mobile, tablet } from "../responsive";
 
 const createCancelToken = axios.CancelToken.source();
@@ -259,7 +259,7 @@ const Navbar = () => {
 
   const HandleLogout = async () => {
     try {
-      const res = await userRequest.post(`/user_auth/user_logout/${userid}`);
+      const res = await publicRequest.post(`/user_auth/user_logout/${userid}`);
       console.log(res.data.msg);
       if (res.data.msg === "User logout successfully") {
         localStorage.clear();

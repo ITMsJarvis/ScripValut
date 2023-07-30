@@ -4,6 +4,8 @@ import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { publicRequest, userRequest } from "../apiRequest";
+import toast, { Toaster } from "react-hot-toast";
 
 const Container = styled.div`
   min-width: 70%;
@@ -12,6 +14,7 @@ const Container = styled.div`
   border-radius: 1em;
   overflow: hidden;
   border: 1px solid #e7e3e3;
+  margin-bottom: 2em;
 `;
 
 const TableHeader = styled.div`
@@ -46,13 +49,24 @@ const Column = styled.div`
 `;
 
 const RowDescription = styled(Link)`
-  min-width: 30%;
+  width: 100%;
   display: flex;
   align-items: center;
   font-weight: 500;
   gap: 1em;
   text-decoration: none;
   color: #000;
+  justify-content: space-between;
+
+  button {
+    font-size: 0.8em;
+    padding: 0.5em;
+    border-radius: 0.5em;
+    border: none;
+    background-color: #f70d0db8;
+    color: #fff;
+    cursor: pointer;
+  }
 `;
 const Description = styled.div`
   min-width: 30%;
@@ -74,8 +88,10 @@ const WathclistTable = () => {
     const getData = async () => {
       try {
         const res = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/stocks/getwatchlist`,
-          { userid: userid }
+          `${import.meta.env.VITE_BASE_URL}/stocks/getwatchlist/${userid}`,
+          {
+            userid: userid,
+          }
         );
 
         setWatchList(res.data);
@@ -91,10 +107,33 @@ const WathclistTable = () => {
     return () => {
       isSubscribed = false;
     };
-  }, [pathname]);
+  }, []);
+
+  const handleRemove = async (e, userid, stockname, status) => {
+    e.preventDefault();
+
+    try {
+      const res = await publicRequest.post("/stocks/removewatchlist", {
+        userid: userid,
+        stockname: stockname,
+        status: status,
+      });
+
+      const notify = () =>
+        toast.success(`${stockname} is removed from watchlist`);
+
+      if (res.status === 200) {
+        notify();
+        window.location.href = "/investment";
+      }
+    } catch (e) {
+      console.log(object);
+    }
+  };
 
   return (
     <Container>
+      <Toaster position="top-center" reverseOrder={false} duration={10000} />
       <TableHeader>
         <ColumnHeader>SR</ColumnHeader>
         <Description>Stockname</Description>
@@ -106,6 +145,13 @@ const WathclistTable = () => {
             to={`/stock/${stock.stockname.replace(/[-()]/g, "")}`}
           >
             {stock.stockname}
+            <button
+              onClick={(e) =>
+                handleRemove(e, stock.userid, stock.stockname, stock.status)
+              }
+            >
+              remove
+            </button>
           </RowDescription>
         </TableRow>
       ))}

@@ -1,4 +1,4 @@
-import React, { Children, useEffect, useLayoutEffect, useState } from "react";
+import React, { Children, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { useGetIndices } from "../customhooks/useGetIndices";
@@ -14,6 +14,8 @@ import "react-loading-skeleton/dist/skeleton.css";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { mobile } from "../responsive";
+import moment from "moment-timezone";
+moment.tz.setDefault("Asia/Kolkata");
 
 const Container = styled.div`
   min-width: 100%;
@@ -64,6 +66,7 @@ const RowDescription = styled(Link)`
   gap: 1em;
   text-decoration: none;
   color: #000;
+  word-wrap: break-word;
 `;
 const Description = styled.div`
   min-width: 30%;
@@ -78,46 +81,53 @@ const IndexImage = styled.img`
   border-radius: 50%;
 `;
 
-const Portfolio = () => {
-  const [portfolioList, setPortFolioList] = useState([]);
+const MutualFundPortfolio = () => {
+  const [MutualFundList, setMutualFundList] = useState([]);
 
   const { userid } = useSelector((state) => state.users);
 
   const { pathname } = useLocation();
 
+  function isWithinMarketLimit() {
+    const now = moment();
+    const start = moment().set({ hour: 9, minute: 15, second: 0 });
+    const end = moment().set({ hour: 15, minute: 30, second: 0 });
+
+    return now.isBetween(start, end);
+  }
+
   useEffect(() => {
     const getData = async () => {
       try {
         const res = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/stocks/getAllstocks/${userid}`,
-          {
-            userid: userid,
-          }
+          `${import.meta.env.VITE_BASE_URL}/mutualfund/getAllMF`,
+          { userid }
         );
 
-        setPortFolioList(res.data);
+        setMutualFundList(res.data);
       } catch (e) {
         console.log(e);
       }
     };
 
-    if (portfolioList.length === 0) {
+    if (MutualFundList.length === 0) {
       getData();
     }
 
-    let intervalId = setInterval(getData, 60000);
+    let intervalId;
+    if (isWithinMarketLimit()) {
+      intervalId = setInterval(getData, 60000);
+    }
 
     return () => {
       clearInterval(intervalId);
     };
-  }, [pathname]);
-
-  console.log(portfolioList);
+  }, []);
 
   return (
     <Container>
       <TableHeader>
-        <Description>Stock Name</Description>
+        <Description>Fund name</Description>
         <ColumnHeader>Quantity</ColumnHeader>
         <ColumnHeader>Market Price</ColumnHeader>
         <ColumnHeader>Invested Price</ColumnHeader>
@@ -125,41 +135,29 @@ const Portfolio = () => {
         <ColumnHeader>Current Value</ColumnHeader>
         <ColumnHeader>Gain/Loss</ColumnHeader>
       </TableHeader>
-
-      {portfolioList?.map((stock, id) => (
-        <TableRow key={id}>
-          <RowDescription
-            to={`/stock/${stock.stockname.replace(/[-()]/g, "")}`}
-          >
-            {stock.stockname}
+      {MutualFundList?.map((fund, i) => (
+        <TableRow key={i}>
+          <RowDescription to={`/mutualFund/${fund.link}/${fund.code}`}>
+            {fund.fundName}
           </RowDescription>
-          <Column>{stock.totalQuantity}</Column>
-          <Column>{stock.marketPrice.toFixed(3)}</Column>
-          <Column>{stock.averagePrice.toFixed(2)}</Column>
-          <Column>
-            {(stock.averagePrice * stock.totalQuantity).toFixed(2)}
-          </Column>
-          <Column>
-            {(stock.marketPrice * stock.totalQuantity).toFixed(3)}
-          </Column>
+          <Column>{fund.units.toFixed(2)}</Column>
+          <Column>{fund.marketPrice}</Column>
+          <Column>{fund.nav}</Column>
+          <Column>{(fund.units * fund.nav).toFixed(2)}</Column>
+          <Column>{(fund.units * fund.marketPrice).toFixed(2)}</Column>
           <Column
             style={{
               color:
-                stock.marketPrice * stock.totalQuantity -
-                  stock.averagePrice * stock.totalQuantity >=
-                0
+                fund.marketPrice * fund.units - fund.nav * fund.units >= 0
                   ? "green"
                   : "red",
             }}
           >
             {(
-              ((
-                stock.marketPrice * stock.totalQuantity -
-                stock.averagePrice * stock.totalQuantity
-              ).toFixed(2) /
-                (stock.averagePrice * stock.totalQuantity)) *
+              ((fund.units * fund.marketPrice - fund.units * fund.nav) /
+                (fund.units * fund.nav)) *
               100
-            ).toFixed(2)}{" "}
+            ).toFixed(2)}
             %
           </Column>
         </TableRow>
@@ -168,4 +166,4 @@ const Portfolio = () => {
   );
 };
 
-export default Portfolio;
+export default MutualFundPortfolio;
