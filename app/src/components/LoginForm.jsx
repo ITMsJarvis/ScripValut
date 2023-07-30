@@ -3,7 +3,7 @@ import styled, { keyframes } from "styled-components";
 import { mobile, tablet } from "../responsive";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { usepasswordview } from "../customhooks/Usepasswordview";
+import { usepasswordview } from "../customhooks/usepasswordview";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { LoginUser } from "../apicalls/UserApicalls";
