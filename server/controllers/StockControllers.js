@@ -1,4 +1,3 @@
-import puppeteer from "puppeteer";
 // import StockList from "../data/stocks.json" assert { type: "json" };
 import mongoose from "mongoose";
 import axios from "axios";
