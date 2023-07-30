@@ -296,7 +296,7 @@ const Navbar = () => {
           </CenterLeft>
           <CenterRight>
             <SearchBar>
-              <img src="../../search.svg" />
+              <img src="../search.svg" />
               <input
                 value={searchInput}
                 type="text"
@@ -379,7 +379,7 @@ const Navbar = () => {
           </CenterLeft>
           <CenterRight>
             <SearchBar>
-              <img src="../../public/search.svg" />
+              <img src="../search.svg" />
               <input
                 value={searchInput}
                 type="text"
