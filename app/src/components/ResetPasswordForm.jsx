@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { usepasswordview } from "../customhooks/Usepasswordview";
+import { usepasswordview } from "../customhooks/usepasswordview";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
