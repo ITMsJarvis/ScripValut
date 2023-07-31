@@ -135,10 +135,6 @@ const MutualFundPage = () => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    GetMutualFund(dispatch);
-  }, [dispatch]);
-
   const { MFList, currentMF } = useSelector((state) => state.mutualFund);
 
   const [SelectedFund, setSelectedFund] = useState();
