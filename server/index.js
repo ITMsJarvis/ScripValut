@@ -20,10 +20,6 @@ app.use(
       "https://socket-api-backend.onrender.com",
       "https://my-stock-api.onrender.com",
     ],
-    allowedHeaders: {
-      "Content-Type": true,
-    },
-    credentials: true,
   })
 );
 
