@@ -72,6 +72,27 @@ const SliderComponent = styled.div`
   }
 `;
 
+const Loader = styled.div`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border-top: 5px solid #4be94b;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid #4be94b;
+  animation: rotate 5s linear infinite;
+  margin-top: 2em;
+
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
 const Investment = () => {
   const [MyinvestMent, setMyInvestMent] = useState(0);
 
@@ -83,97 +104,167 @@ const Investment = () => {
 
   const { pathname } = useLocation();
 
-  useEffect(() => {
-    let isSubscribe = true;
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     try {
+  //       const res = await axios.post(
+  //         `${import.meta.env.VITE_BASE_URL}/stocks/getAllstocks/${userid}`,
+  //         {
+  //           userid: userid,
+  //         }
+  //       );
 
-    const getData = async () => {
+  //       const data = res.data;
+
+  //       let totalInvestMent = data.reduce(
+  //         (acc, val) => acc + val.marketPrice * val.totalQuantity,
+  //         0
+  //       );
+  //       setMyInvestMent(totalInvestMent);
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   };
+
+  //   // const delayGetData = () => {
+  //   //   setTimeout(getData, 0);
+  //   // };
+
+  //   if (MyinvestMent.length === 0) {
+  //     // delayGetData();
+
+  //     getData();
+  //   }
+
+  //   let intervalId = setInterval(getData, 60000);
+
+  //   return () => {
+  //     clearInterval(intervalId);
+  //   };
+  // }, [pathname]);
+
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     try {
+  //       const res1 = await axios.post(
+  //         `${import.meta.env.VITE_BASE_URL}/mutualfund/getAllMF`,
+  //         { userid: userid }
+  //       );
+
+  //       const data1 = res1.data;
+
+  //       console.log(data1);
+
+  //       let TotalMfInvestment = data1.reduce(
+  //         (acc, val) => acc + val.marketPrice * val.units,
+  //         0
+  //       );
+
+  //       setMFInvestMent(TotalMfInvestment);
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   };
+
+  //   if (MFInvestMent.length === 0) {
+  //     getData();
+  //   }
+
+  //   let intervalId = setInterval(getData, 60000);
+
+  //   return () => {
+  //     clearInterval(intervalId);
+  //   };
+  // }, [pathname]);
+
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     try {
+  //       const res = await userRequest.post(`/stocks/getBalance/${userid}`, {
+  //         userid: userid,
+  //       });
+
+  //       const balance = Number(res.data.walletbalance).toFixed(1);
+
+  //       setMyBalance(balance);
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   };
+
+  //   getData();
+  // }, [pathname]);
+
+  useEffect(() => {
+    const fetchData = async () => {
       try {
-        const res = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/stocks/getAllstocks/${userid}`,
-          {
-            userid: userid,
-          }
+        const [stocksResponse, mfResponse, balanceResponse] = await Promise.all(
+          [
+            axios.post(
+              `${import.meta.env.VITE_BASE_URL}/stocks/getAllstocks/${userid}`,
+              { userid }
+            ),
+            axios.post(`${import.meta.env.VITE_BASE_URL}/mutualfund/getAllMF`, {
+              userid,
+            }),
+            axios.post(
+              `${import.meta.env.VITE_BASE_URL}/stocks/getBalance/${userid}`,
+              { userid }
+            ),
+          ]
         );
 
-        const data = res.data;
+        const stocksData = stocksResponse.data;
+        const mfData = mfResponse.data;
+        const balance = Number(balanceResponse.data.walletbalance).toFixed(1);
 
-        let totalInvestMent = data.reduce(
+        let totalStockInvestment = stocksData.reduce(
           (acc, val) => acc + val.marketPrice * val.totalQuantity,
           0
         );
-        setMyInvestMent(totalInvestMent);
-      } catch (e) {
-        console.log(e);
-      }
-    };
 
-    const delayGetData = () => {
-      setTimeout(getData, 5000);
-    };
-
-    if (MyinvestMent.length === 0) {
-      delayGetData();
-    }
-
-    let intervalId = setInterval(getData, 60000);
-
-    return () => {
-      clearInterval(intervalId);
-      isSubscribe = false;
-    };
-  }, [pathname]);
-
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const res1 = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/mutualfund/getAllMF`,
-          { userid: userid }
-        );
-
-        const data1 = res1.data;
-
-        console.log(data1);
-
-        let TotalMfInvestment = data1.reduce(
+        let totalMfInvestment = mfData.reduce(
           (acc, val) => acc + val.marketPrice * val.units,
           0
         );
 
-        setMFInvestMent(TotalMfInvestment);
-      } catch (e) {
-        console.log(e);
+        setMyInvestMent(totalStockInvestment);
+        setMFInvestMent(totalMfInvestment);
+        setMyBalance(balance);
+      } catch (error) {
+        console.log(error);
+        // Handle errors here if needed
       }
     };
 
-    if (MFInvestMent.length === 0) {
-      getData();
-    }
+    const intervalId = setInterval(fetchData, 60000);
 
-    let intervalId = setInterval(getData, 60000);
+    // Fetch data on component mount
+    fetchData();
 
     return () => {
       clearInterval(intervalId);
     };
   }, [pathname]);
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const res = await userRequest.post(`/stocks/getBalance/${userid}`, {
-          userid: userid,
-        });
-
-        const balance = Number(res.data.walletbalance).toFixed(1);
-
-        setMyBalance(balance);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-
-    getData();
-  }, [pathname]);
+  if (MyinvestMent === 0 || MFInvestMent === 0 || MyBalance === 0) {
+    // Data is still loading, return a loading state if needed
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "3em",
+        }}
+      >
+        <Loader />
+        <small style={{ color: "#2759e5" }}>
+          Note : Details will take some time to load please wait for few seconds
+        </small>
+      </div>
+    );
+  }
 
   return (
     <Container>
