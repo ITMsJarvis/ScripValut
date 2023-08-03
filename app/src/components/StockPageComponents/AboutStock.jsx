@@ -105,7 +105,9 @@ const AboutStock = () => {
           <Row>
             <p>Manaing Director</p>
             <h4>
-              {CurrentStockData["basic_info"]["companyOfficers"][1]["name"]}
+              {CurrentStockData["basic_info"]["companyOfficers"]
+                ? CurrentStockData["basic_info"]["companyOfficers"][1]["name"]
+                : "--"}
             </h4>
           </Row>
           <Row>

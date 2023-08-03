@@ -221,7 +221,7 @@ const StockInfo = () => {
         //   window.location.href = "/investment";
         // }
       } catch (e) {
-        const failure = () => toast.error("Something went wrong");
+        const failure = () => toast.error(e.response.data);
 
         failure();
       }
@@ -288,7 +288,7 @@ const StockInfo = () => {
       //   window.location.href = "/investment";
       // }
     } catch (e) {
-      const Error = () => toast.error("Something went wrong");
+      const Error = () => toast.error(e.response.data);
 
       Error();
     }

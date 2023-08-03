@@ -107,7 +107,7 @@ const StockViewBox = ({ ...props }) => {
 
       Success();
     } catch (e) {
-      const Error = () => toast.error("Something went wrong");
+      const Error = () => toast.error(e.response.data);
 
       Error();
     }
