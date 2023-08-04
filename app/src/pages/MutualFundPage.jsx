@@ -205,7 +205,7 @@ const MutualFundPage = () => {
                 </Column>
                 <Row>
                   <p>Launched on</p>
-                  <p>{currentMF?.scheme_start_date.date}</p>
+                  {/* <p>{currentMF?.scheme_start_date.date}</p> */}
                 </Row>
                 {SelectedFund?.fundamentals.map((fundamental, index) => (
                   <Row key={index}>

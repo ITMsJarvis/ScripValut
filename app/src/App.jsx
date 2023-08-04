@@ -42,9 +42,7 @@ function App() {
 
   useEffect(() => {
     GetMutualFund(dispatch);
-  }, []);
 
-  useEffect(() => {
     let idleTimer;
     const idleTimeout = 5 * 60 * 1000; // 5 minutes (in milliseconds)
 
