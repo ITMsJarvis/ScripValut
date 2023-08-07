@@ -16,6 +16,9 @@ import {
   GetCurrentStockStarted,
   GetCurrentStockSuccess,
   GetCurrentStockFailed,
+  GetIndicesStart,
+  GetIndicesSuccess,
+  GetIndicesFailed,
 } from "../redux/StockDetailsSlice";
 
 export const GetTopGainers = async (dispatch, link, signal) => {
@@ -78,6 +81,19 @@ export const GetCurrentStock = async (dispatch, stock_name, signal) => {
     dispatch(GetCurrentStockSuccess(result.data));
   } catch (e) {
     dispatch(GetCurrentStockFailed());
+  }
+};
+
+export const GetIndices = async (dispatch) => {
+  dispatch(GetIndicesStart());
+
+  try {
+    const res = await axios.get(`${import.meta.env.VITE_STOCK_API}/allindices`);
+
+    dispatch(GetIndicesSuccess(res.data));
+  } catch (e) {
+    console.log(e);
+    dispatch(GetIndicesFailed());
   }
 };
 

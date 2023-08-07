@@ -23,6 +23,10 @@ const Home = () => {
     <Container show={openpopup === true ? "open" : "close"}>
       <Navbar />
       <TradingViewWidget />
+      <small style={{ color: "#3a4beb" }}>
+        Note : Server will take some time to connect due to load wait or refresh
+        to get connected
+      </small>
       <Outlet />
       <Footer />
     </Container>

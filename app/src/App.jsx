@@ -24,6 +24,14 @@ import Introduction from "./pages/Introduction";
 import MutualFundPage from "./pages/MutualFundPage";
 import { GetMutualFund } from "./apicalls/MutualFundCalls";
 import { isAfter, subMinutes } from "date-fns";
+import { useGetIndices } from "./customhooks/useGetIndices";
+import {
+  GetFiftyTwoWeekHigh,
+  GetFiftyTwoWeekLow,
+  GetIndices,
+  GetTopGainers,
+  GetTopLosers,
+} from "./apicalls/StockApicalls";
 
 const Container = styled.main`
   display: flex;
@@ -34,51 +42,40 @@ const Container = styled.main`
 
 function App() {
   // const [user, setUser] = useState(0);
+  // const [IndicesData] = useGetIndices();
 
   const { username } = useSelector((state) => state.users);
-  const [isIdle, setIsIdle] = useState(false);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    GetMutualFund(dispatch);
+    async function fetchData() {
+      const promises = [
+        GetTopGainers(
+          dispatch,
+          `${import.meta.env.VITE_STOCK_API}/all-top-stocks/top-gainers`
+        ),
+        GetTopLosers(
+          dispatch,
+          `${import.meta.env.VITE_STOCK_API}/all-top-stocks/top-losers`
+        ),
+        GetFiftyTwoWeekHigh(
+          dispatch,
+          `${import.meta.env.VITE_STOCK_API}/all-top-stocks/52-week-high`
+        ),
+        GetFiftyTwoWeekLow(
+          dispatch,
+          `${import.meta.env.VITE_STOCK_API}/all-top-stocks/52-week-low`
+        ),
+        GetIndices(dispatch),
+        GetMutualFund(dispatch),
+      ];
 
-    let idleTimer;
-    const idleTimeout = 5 * 60 * 1000; // 5 minutes (in milliseconds)
+      await Promise.all(promises);
+    }
 
-    const resetIdleTimer = () => {
-      clearTimeout(idleTimer);
-      idleTimer = setTimeout(() => setIsIdle(true), idleTimeout);
-    };
-
-    const handleUserActivity = () => {
-      setIsIdle(false);
-      resetIdleTimer();
-    };
-
-    // Attach event listeners to detect user activity
-    document.addEventListener("mousemove", handleUserActivity);
-    document.addEventListener("keydown", handleUserActivity);
-    document.addEventListener("mousedown", handleUserActivity);
-    document.addEventListener("touchstart", handleUserActivity);
-
-    // Start the idle timer when the component mounts
-    resetIdleTimer();
-
-    // Clean up event listeners when the component unmounts
-    return () => {
-      clearTimeout(idleTimer);
-      document.removeEventListener("mousemove", handleUserActivity);
-      document.removeEventListener("keydown", handleUserActivity);
-      document.removeEventListener("mousedown", handleUserActivity);
-      document.removeEventListener("touchstart", handleUserActivity);
-    };
-  }, []);
-
-  if (isIdle) {
-    localStorage.clear();
-    window.location.reload();
-  }
+    fetchData();
+  }, [dispatch]);
 
   return (
     <Container>

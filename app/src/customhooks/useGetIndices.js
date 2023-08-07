@@ -14,13 +14,7 @@ export const useGetIndices = () => {
 
   const dispatch = useDispatch();
 
-  const { pathname } = useLocation();
-
   useEffect(() => {
-    const controller = new AbortController();
-
-    const signal = controller.signal;
-
     dispatch(GetIndicesStart());
 
     const getData = async () => {
@@ -28,11 +22,8 @@ export const useGetIndices = () => {
 
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_STOCK_API}/allindices`,
-          { signal }
+          `${import.meta.env.VITE_STOCK_API}/allindices`
         );
-        console.log(res.data);
-
         setIndicesData(res.data);
 
         dispatch(GetIndicesSuccess(res.data));
@@ -43,11 +34,7 @@ export const useGetIndices = () => {
     };
 
     getData();
-
-    return () => {
-      controller.abort();
-    };
-  }, [pathname]);
+  }, []);
 
   return [IndicesData];
 };

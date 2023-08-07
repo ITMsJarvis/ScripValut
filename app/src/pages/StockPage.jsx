@@ -221,10 +221,10 @@ const StockPage = () => {
           <p style={{ color: "#4be93b" }}>
             {isConnected ? "Connected" : "disconnect"}
           </p>
-          <small style={{ color: "#3a4beb" }}>
+          {/* <small style={{ color: "#3a4beb" }}>
             Note : Server will take some time to connect due to load wait or
             refresh to get connected
-          </small>
+          </small> */}
           <StockChart
             stockList={[
               oneDayChart,

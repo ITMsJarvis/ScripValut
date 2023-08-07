@@ -80,7 +80,7 @@ const StockViewBox = ({ ...props }) => {
 
   const { userid } = useSelector((state) => state.users);
 
-  const shortname = props.short_name.split("-")[0];
+  const shortname = props.short_name?.split("-")[0];
 
   const HandleHover = () => {
     setShowAddbutton(true);

@@ -158,6 +158,7 @@ const MutualFundPage = () => {
 
     if (isSubscribe) {
       getData();
+      GetCurrentMF(dispatch, code);
     }
 
     return () => {
@@ -165,9 +166,9 @@ const MutualFundPage = () => {
     };
   }, [code]);
 
-  useEffect(() => {
-    GetCurrentMF(dispatch, code);
-  }, [code]);
+  // useEffect(() => {
+
+  // }, [code]);
 
   return (
     <Container>

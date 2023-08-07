@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useGetIndices } from "../customhooks/useGetIndices";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { tablet } from "../responsive";
+import {
+  GetIndicesFailed,
+  GetIndicesSuccess,
+} from "../redux/StockDetailsSlice";
+import axios from "axios";
+import { GetMutualFund } from "../apicalls/MutualFundCalls";
 
 const Container = styled.div`
   width: 100%;
@@ -84,53 +90,52 @@ const LoaderSkeletons = styled(Skeleton)`
   word-wrap: break-word;
 `;
 
-const IndexWrapper = () => {
-  const [IndicesData] = useGetIndices();
+const IndexWrapper = ({ data }) => {
+  // const [IndicesData] = useGetIndices();
 
   const { indices, isLoading, error } = useSelector((state) => state.stocks);
+  const { pathname } = useLocation();
 
-  {
-    return (
-      <Container>
-        <Top>
-          <Title>Index</Title>
-          <Link
-            style={{ textDecoration: "none", color: "#4BE93B" }}
-            to="/indices"
-          >
-            All indices
-          </Link>
-        </Top>
+  return (
+    <Container>
+      <Top>
+        <Title>Index</Title>
+        <Link
+          style={{ textDecoration: "none", color: "#4BE93B" }}
+          to="/indices"
+        >
+          All indices
+        </Link>
+      </Top>
 
-        <Bottom>
-          {indices.length <= 0 ? (
-            <LoaderDiv>
-              <LoaderSkeletons width={220} height={80} />
-              <LoaderSkeletons width={220} height={80} />
-              <LoaderSkeletons width={220} height={80} />
-              <LoaderSkeletons width={220} height={80} />
-            </LoaderDiv>
-          ) : (
-            indices?.slice(0, 4).map((index, id) => (
-              <Widgets key={id}>
-                <IndexName>{index.company}</IndexName>
-                <WidgetsBottom>
-                  <p>{index.last_trade}</p>
-                  <PercentageChange
-                    change={
-                      parseFloat(index.day_chg) > 0 ? "positive" : "negative"
-                    }
-                  >
-                    {index.day_chg}
-                  </PercentageChange>
-                </WidgetsBottom>
-              </Widgets>
-            ))
-          )}
-        </Bottom>
-      </Container>
-    );
-  }
+      <Bottom>
+        {indices.length === 0 ? (
+          <LoaderDiv>
+            <LoaderSkeletons width={220} height={80} />
+            <LoaderSkeletons width={220} height={80} />
+            <LoaderSkeletons width={220} height={80} />
+            <LoaderSkeletons width={220} height={80} />
+          </LoaderDiv>
+        ) : (
+          indices?.slice(0, 4).map((index, id) => (
+            <Widgets key={id}>
+              <IndexName>{index.company}</IndexName>
+              <WidgetsBottom>
+                <p>{index.last_trade}</p>
+                <PercentageChange
+                  change={
+                    parseFloat(index.day_chg) > 0 ? "positive" : "negative"
+                  }
+                >
+                  {index.day_chg}
+                </PercentageChange>
+              </WidgetsBottom>
+            </Widgets>
+          ))
+        )}
+      </Bottom>
+    </Container>
+  );
 };
 
 export default IndexWrapper;

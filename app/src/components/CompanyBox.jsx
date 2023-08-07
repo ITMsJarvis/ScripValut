@@ -8,10 +8,11 @@ import {
   GetTopGainers,
   GetTopLosers,
 } from "../apicalls/StockApicalls";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { mobile, tablet } from "../responsive";
+import { Switch } from "@mui/material";
 
 const Container = styled.div`
   width: 100%;
@@ -53,10 +54,6 @@ const Slider = styled.div`
 `;
 
 const CompanyBox = (props) => {
-  console.log(props.info.link);
-
-  const dispatch = useDispatch();
-
   const {
     fiftyTwoWeekHighData,
     fiftyTwoWeekLowData,
@@ -66,38 +63,20 @@ const CompanyBox = (props) => {
     error,
   } = useSelector((state) => state.stocks);
 
-  useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    // Promise.race([
-    //   GetTopGainers(dispatch, props.info.link === "Top Gainers", signal),
-    //   GetTopLosers(dispatch, props.info.link === "Top Losers", signal),
-    //   GetFiftyTwoWeekHigh(dispatch, props.info.link === "52 Week High", signal),
-    //   GetFiftyTwoWeekLow(dispatch, props.info.link === "52 Week Low", signal),
-    // ]).then(() => {
-    //   console.log("success");
-    // });
-
-    if (props.info.type === "Top Gainers") {
-      GetTopGainers(dispatch, props.info.link);
-    }
-
-    if (props.info.type === "Top Losers") {
-      GetTopLosers(dispatch, props.info.link);
-    }
-
-    if (props.info.type === "52 Week High") {
-      GetFiftyTwoWeekHigh(dispatch, props.info.link);
-    }
-
-    if (props.info.type === "52 Week Low") {
-      GetFiftyTwoWeekLow(dispatch, props.info.link);
-    }
-    return () => {
-      controller.abort();
-    };
-  }, []);
+  // useEffect(() => {
+  //   if (props.info.type === "Top Gainers") {
+  //     setTimeout(GetTopGainers(dispatch, props.info.link), 1000);
+  //   }
+  //   if (props.info.type === "Top Losers") {
+  //     setTimeout(GetTopLosers(dispatch, props.info.link), 1000);
+  //   }
+  //   if (props.info.type === "52 Week High") {
+  //     setTimeout(GetFiftyTwoWeekHigh(dispatch, props.info.link), 1000);
+  //   }
+  //   if (props.info.type === "52 Week Low") {
+  //     setTimeout(GetFiftyTwoWeekLow(dispatch, props.info.link), 1000);
+  //   }
+  // }, [dispatch, props.info.type, props.info.link, pathname]);
 
   return (
     <Container>
